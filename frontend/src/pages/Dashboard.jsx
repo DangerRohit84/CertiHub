@@ -157,8 +157,8 @@ const Dashboard = () => {
   const handleUpdateCategory = async (certId, newCategory) => {
     try {
       const certRef = doc(db, "certificates", certId);
-      await updateDoc(certRef, { category: newCategory });
-      setCertificates(prev => prev.map(c => c.id === certId ? { ...c, category: newCategory } : c));
+      await updateDoc(certRef, { userCategory: newCategory });
+      setCertificates(prev => prev.map(c => c.id === certId ? { ...c, userCategory: newCategory } : c));
       setEditingCategoryId(null);
       setEditingCategoryValue('');
       toast.success("Category updated!");
@@ -313,7 +313,19 @@ const Dashboard = () => {
                       </span>
                     )}
                   </div>
-                  <p className="mb-3 text-xs font-medium text-slate-500 dark:text-slate-400">{cert.issuer}</p>
+                  <p className="mb-2 text-xs font-medium text-slate-500 dark:text-slate-400">{cert.issuer}</p>
+                  {cert.category && (
+                    <div className="mb-2 flex items-center gap-1.5">
+                      <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Domain:</span>
+                      <span className="chip text-[9px]">{cert.category}</span>
+                    </div>
+                  )}
+                  {cert.userCategory && (
+                    <div className="mb-2 flex items-center gap-1.5">
+                      <Tag className="w-3 h-3 text-brand-500" />
+                      <span className="text-[9px] font-semibold text-brand-600 dark:text-brand-400">{cert.userCategory}</span>
+                    </div>
+                  )}
                   <div className="flex flex-wrap gap-1 mt-auto mb-3">
                     {cert.skills?.slice(0, 3).map((skill, idx) => (
                       <span key={idx} className="chip text-[9px]">{skill}</span>
@@ -323,7 +335,7 @@ const Dashboard = () => {
                     <Link to={`/certificate/${cert.id}`} className="flex-1 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] py-1.5 text-center text-xs font-medium text-slate-700 transition-colors hover:border-brand-200 hover:text-brand-700 dark:text-slate-300">View</Link>
                     <div className="relative">
                       <button
-                        onClick={() => { setEditingCategoryId(editingCategoryId === cert.id ? null : cert.id); setEditingCategoryValue(cert.category || ''); }}
+                        onClick={() => { setEditingCategoryId(editingCategoryId === cert.id ? null : cert.id); setEditingCategoryValue(cert.userCategory || ''); }}
                         className={`p-1.5 border border-slate-200 dark:border-white/[0.08] rounded-lg transition-colors ${editingCategoryId === cert.id ? 'bg-brand-50 text-brand-600 border-brand-200 dark:bg-brand-500/10 dark:text-brand-400 dark:border-brand-500/30' : 'bg-white dark:bg-white/[0.04] text-slate-400 hover:text-brand-600'}`}
                         title="Set Category"
                       >
@@ -337,7 +349,7 @@ const Dashboard = () => {
                               <button
                                 key={cat}
                                 onClick={() => handleUpdateCategory(cert.id, cat)}
-                                className={`px-2 py-1.5 rounded-lg text-[11px] font-medium text-left transition-colors ${(cert.category || 'Other') === cat ? 'bg-brand-600 text-white' : 'bg-slate-50 dark:bg-white/[0.04] text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.08]'}`}
+                                className={`px-2 py-1.5 rounded-lg text-[11px] font-medium text-left transition-colors ${(cert.userCategory || 'Other') === cat ? 'bg-brand-600 text-white' : 'bg-slate-50 dark:bg-white/[0.04] text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.08]'}`}
                               >
                                 {cat}
                               </button>

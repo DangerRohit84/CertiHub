@@ -189,13 +189,19 @@ const CertificateDetails = () => {
 
             <div className="flex flex-wrap gap-6 mb-12 mt-8">
                <div className="flex flex-col border-l-2 border-slate-200 dark:border-white/10 pl-4">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Issue Date</span>
-                  <span className="font-bold text-slate-900 dark:text-white">{cert.date || 'Jan 2024'}</span>
+                   <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Issue Date</span>
+                   <span className="font-bold text-slate-900 dark:text-white">{cert.date || 'Jan 2024'}</span>
                </div>
                <div className="flex flex-col border-l-2 border-slate-200 dark:border-white/10 pl-4">
-                   <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Category</span>
-                  <span className="font-bold text-slate-900 dark:text-white">{cert.category || 'Professional'}</span>
+                   <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Domain</span>
+                   <span className="font-bold text-slate-900 dark:text-white">{cert.category || 'Professional'}</span>
                </div>
+               {cert.userCategory && (
+                 <div className="flex flex-col border-l-2 border-brand-300 dark:border-brand-500/30 pl-4">
+                   <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Category</span>
+                   <span className="font-bold text-brand-600 dark:text-brand-400">{cert.userCategory}</span>
+                 </div>
+               )}
             </div>
             
             <div className="space-y-12">
