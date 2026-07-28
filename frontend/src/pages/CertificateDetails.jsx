@@ -193,7 +193,7 @@ const CertificateDetails = () => {
                   <span className="font-bold text-slate-900 dark:text-white">{cert.date || 'Jan 2024'}</span>
                </div>
                <div className="flex flex-col border-l-2 border-slate-200 dark:border-white/10 pl-4">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Domain</span>
+                   <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Category</span>
                   <span className="font-bold text-slate-900 dark:text-white">{cert.category || 'Professional'}</span>
                </div>
             </div>
