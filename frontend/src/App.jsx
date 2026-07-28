@@ -47,30 +47,25 @@ const RoleProtectedRoute = ({ children, allowedRoles }) => {
 
   if (loading) return (
     <div className="flex h-screen items-center justify-center">
-      <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent"></div>
+      <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-brand-200 border-t-brand-600" />
     </div>
   );
-  
   if (!user) return <Navigate to="/login" />;
-  
-  // Special case for super admin
   if (user.email === 'admin@certihub.com') return children;
-
   return allowedRoles.includes(role) ? children : <Navigate to="/dashboard" />;
 };
 
-// Placeholder for missing dashboards
 const Placeholder = ({ title }) => (
   <div className="flex flex-col items-center justify-center h-[80vh] text-slate-400">
-    <h1 className="text-2xl font-black">{title} Dashboard Coming Soon</h1>
-    <p>We are finalizing this workspace for your role.</p>
+    <h1 className="text-2xl font-bold">{title} Dashboard Coming Soon</h1>
+    <p className="mt-2 text-sm">We are finalizing this workspace for your role.</p>
   </div>
 );
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-[var(--app-bg)] text-slate-950 transition-colors duration-300 dark:text-slate-100">
+      <div className="min-h-screen bg-[rgb(var(--app-bg))] text-slate-950 transition-colors duration-200 dark:text-slate-100">
         <Navbar />
         <ThemeToggle />
         <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
@@ -78,25 +73,25 @@ function App() {
         <main className="pt-16">
           <Suspense fallback={
             <div className="flex h-[80vh] items-center justify-center">
-              <div className="h-10 w-10 animate-spin rounded-full border-4 border-brand-500 border-t-transparent"></div>
+              <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-brand-200 border-t-brand-600" />
             </div>
           }>
             <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/dashboard" element={<RoleProtectedRoute allowedRoles={['student']}><Dashboard /></RoleProtectedRoute>} />
-            <Route path="/institution" element={<RoleProtectedRoute allowedRoles={['institution']}><InstitutionDashboard /></RoleProtectedRoute>} />
-            <Route path="/hod" element={<RoleProtectedRoute allowedRoles={['hod']}><HODDashboard /></RoleProtectedRoute>} />
-            <Route path="/mentor" element={<RoleProtectedRoute allowedRoles={['mentor']}><MentorDashboard /></RoleProtectedRoute>} />
-            <Route path="/organization" element={<RoleProtectedRoute allowedRoles={['org_admin']}><OrganizationDashboard /></RoleProtectedRoute>} />
-            <Route path="/employee" element={<RoleProtectedRoute allowedRoles={['employee']}><Placeholder title="Employee" /></RoleProtectedRoute>} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/user/:username" element={<Portfolio />} />
-            <Route path="/certificate/:id" element={<CertificateDetails />} />
-            <Route path="/verify/:id" element={<Verify />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/advisor" element={<CareerAdvisor />} />
-            <Route path="/admin" element={<RoleProtectedRoute allowedRoles={['admin']}><AdminDashboard /></RoleProtectedRoute>} />
-          </Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/dashboard" element={<RoleProtectedRoute allowedRoles={['student']}><Dashboard /></RoleProtectedRoute>} />
+              <Route path="/institution" element={<RoleProtectedRoute allowedRoles={['institution']}><InstitutionDashboard /></RoleProtectedRoute>} />
+              <Route path="/hod" element={<RoleProtectedRoute allowedRoles={['hod']}><HODDashboard /></RoleProtectedRoute>} />
+              <Route path="/mentor" element={<RoleProtectedRoute allowedRoles={['mentor']}><MentorDashboard /></RoleProtectedRoute>} />
+              <Route path="/organization" element={<RoleProtectedRoute allowedRoles={['org_admin']}><OrganizationDashboard /></RoleProtectedRoute>} />
+              <Route path="/employee" element={<RoleProtectedRoute allowedRoles={['employee']}><Placeholder title="Employee" /></RoleProtectedRoute>} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/user/:username" element={<Portfolio />} />
+              <Route path="/certificate/:id" element={<CertificateDetails />} />
+              <Route path="/verify/:id" element={<Verify />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/advisor" element={<CareerAdvisor />} />
+              <Route path="/admin" element={<RoleProtectedRoute allowedRoles={['admin']}><AdminDashboard /></RoleProtectedRoute>} />
+            </Routes>
           </Suspense>
         </main>
       </div>

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { UserPlus, Link2, ShieldCheck, Award } from 'lucide-react';
 import axios from 'axios';
 import { auth, db } from '../firebase/firebase';
@@ -108,7 +107,7 @@ const HODDashboard = () => {
       </div>
 
       <div className="grid md:grid-cols-2 gap-8 mt-12">
-        <div className="glass-card p-8 rounded-[2.5rem]">
+        <div className="card p-8 rounded-[2.5rem]">
           <h3 className="text-2xl font-black text-slate-950 dark:text-white mb-6">Faculty Mentors</h3>
           <p className="text-slate-400 mb-8 text-sm font-bold uppercase tracking-widest">Authorized reviewers in your domain</p>
           
@@ -131,7 +130,7 @@ const HODDashboard = () => {
           </div>
         </div>
 
-        <div className="glass-card p-8 rounded-[2.5rem] bg-gradient-to-br from-brand-600 to-indigo-700 text-white border-0">
+        <div className="card p-8 rounded-[2.5rem] bg-gradient-to-br from-brand-600 to-indigo-700 text-white border-0">
           <ShieldCheck className="w-12 h-12 mb-6 opacity-80" />
           <h3 className="text-3xl font-black mb-4">Verification Chain</h3>
           <p className="text-brand-100 font-medium leading-relaxed mb-8">
@@ -144,14 +143,9 @@ const HODDashboard = () => {
         </div>
       </div>
 
-      {/* Add Mentor Modal */}
       {showAddMentor && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-950/20 backdrop-blur-sm">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white dark:bg-slate-900 w-full max-w-md p-8 rounded-[2.5rem] shadow-2xl"
-          >
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-950/50">
+          <div className="bg-white dark:bg-slate-900 w-full max-w-md p-8 rounded-[2.5rem] shadow-2xl">
             <h3 className="text-2xl font-black text-slate-950 dark:text-white mb-6">Add Faculty Mentor</h3>
             <form onSubmit={handleCreateMentor} className="space-y-4">
               <div>
@@ -177,18 +171,13 @@ const HODDashboard = () => {
                 <button type="submit" className="flex-1 bg-brand-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-brand-500/20">Add Mentor</button>
               </div>
             </form>
-          </motion.div>
+          </div>
         </div>
       )}
 
-      {/* Link Student Modal */}
       {showLinkStudent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-950/20 backdrop-blur-sm">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white dark:bg-slate-900 w-full max-w-md p-8 rounded-[2.5rem] shadow-2xl"
-          >
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-950/50">
+          <div className="bg-white dark:bg-slate-900 w-full max-w-md p-8 rounded-[2.5rem] shadow-2xl">
             <h3 className="text-2xl font-black text-slate-950 dark:text-white mb-6">Link Student to Mentor</h3>
             <form onSubmit={handleLinkStudent} className="space-y-4">
               <div>
@@ -217,7 +206,7 @@ const HODDashboard = () => {
                 <button type="submit" className="flex-1 bg-brand-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-brand-500/20">Establish Link</button>
               </div>
             </form>
-          </motion.div>
+          </div>
         </div>
       )}
 

@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
 import { UploadCloud, FileText, Download, Sparkles, X } from 'lucide-react';
 import axios from 'axios';
 import { auth } from '../../firebase/firebase';
@@ -49,7 +48,6 @@ const SmartBatchIssueModal = ({ onClose }) => {
     
     setIssuing(true);
     
-    // Read CSV first
     const reader = new FileReader();
     reader.onload = async (event) => {
       try {
@@ -69,7 +67,6 @@ const SmartBatchIssueModal = ({ onClose }) => {
           });
         }
 
-        // Send to backend
         const token = await auth.currentUser?.getIdToken();
         const formData = new FormData();
         
@@ -99,12 +96,8 @@ const SmartBatchIssueModal = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-950/20 backdrop-blur-sm">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 w-full max-w-2xl p-8 rounded-3xl shadow-2xl relative max-h-[90vh] overflow-y-auto scrollbar-hide"
-      >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-950/50">
+      <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 w-full max-w-2xl p-8 rounded-3xl shadow-2xl relative max-h-[90vh] overflow-y-auto scrollbar-hide">
         <button 
           onClick={onClose}
           className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white"
@@ -121,7 +114,6 @@ const SmartBatchIssueModal = ({ onClose }) => {
           </p>
 
           <div className="grid md:grid-cols-2 gap-6">
-            {/* Certificate Upload */}
             <div>
               <label className="field-label mb-2 block">1. Certificate Files</label>
               <div 
@@ -143,7 +135,6 @@ const SmartBatchIssueModal = ({ onClose }) => {
               </div>
             </div>
 
-            {/* CSV Mapping Upload */}
             <div>
               <label className="field-label mb-2 block">2. Mapping CSV</label>
               <div 
@@ -198,7 +189,7 @@ const SmartBatchIssueModal = ({ onClose }) => {
             )}
           </button>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };

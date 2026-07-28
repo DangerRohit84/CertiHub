@@ -13,7 +13,6 @@ import {
   Search,
   Download
 } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import { auth } from '../firebase/firebase';
@@ -58,34 +57,24 @@ const AdminDashboard = () => {
 
   if (loading) return (
     <div className="flex h-[80vh] items-center justify-center">
-      <motion.div 
-        animate={{ rotate: 360 }}
-        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-        className="h-12 w-12 rounded-full border-4 border-brand-500 border-t-transparent" 
-      />
+      <div className="h-12 w-12 animate-spin rounded-full border-4 border-brand-500 border-t-transparent" />
     </div>
   );
 
   return (
     <div className="relative min-h-screen bg-slate-50 dark:bg-slate-950">
-      {/* Dynamic Backdrop */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 right-0 h-[500px] w-[500px] rounded-full bg-brand-500/10 blur-[120px]" />
         <div className="absolute bottom-0 left-0 h-[500px] w-[500px] rounded-full bg-teal-500/10 blur-[120px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 py-12">
-        {/* Header Section */}
         <header className="mb-12 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-brand-600 dark:text-brand-400"
-            >
+            <div className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-brand-600 dark:text-brand-400">
               <Zap className="h-4 w-4" />
               Administrative Command
-            </motion.div>
+            </div>
             <h1 className="mt-2 text-5xl font-black tracking-tight text-slate-950 dark:text-white">
               System Analytics
             </h1>
@@ -106,7 +95,6 @@ const AdminDashboard = () => {
           </div>
         </header>
 
-        {/* Stats Grid */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard 
             icon={<Users className="h-6 w-6" />}
@@ -143,9 +131,8 @@ const AdminDashboard = () => {
         </div>
 
         <div className="mt-12 grid gap-8 lg:grid-cols-3">
-          {/* Main Growth Chart */}
           <div className="lg:col-span-2">
-            <div className="glass-card h-full p-8 rounded-[2.5rem]">
+            <div className="card h-full p-8 rounded-[2.5rem]">
               <div className="mb-8 flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-black text-slate-950 dark:text-white">Certificate Growth</h2>
@@ -170,9 +157,8 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* System Health Section */}
           <div className="lg:col-span-1">
-            <div className="glass-card h-full p-8 rounded-[2.5rem]">
+            <div className="card h-full p-8 rounded-[2.5rem]">
               <h2 className="mb-6 text-2xl font-black text-slate-950 dark:text-white">System Health</h2>
               
               <div className="space-y-6">
@@ -217,11 +203,9 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Secondary Grid */}
         <div className="mt-8 grid gap-8 lg:grid-cols-3">
-          {/* Recent Activity Table */}
           <div className="lg:col-span-2">
-            <div className="glass-card p-8 rounded-[2.5rem]">
+            <div className="card p-8 rounded-[2.5rem]">
               <div className="mb-8 flex items-center justify-between">
                 <h2 className="text-2xl font-black text-slate-950 dark:text-white">Credential Feed</h2>
                 <div className="relative">
@@ -275,9 +259,8 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Issuer Distribution */}
           <div className="lg:col-span-1">
-            <div className="glass-card p-8 rounded-[2.5rem]">
+            <div className="card p-8 rounded-[2.5rem]">
               <h2 className="mb-6 text-2xl font-black text-slate-950 dark:text-white">Issuer Share</h2>
               <div className="space-y-6">
                 {Object.entries(stats?.issuerDistribution || {}).sort((a,b) => b[1] - a[1]).slice(0, 6).map(([issuer, count], idx) => (
@@ -287,11 +270,9 @@ const AdminDashboard = () => {
                       <span className="font-black text-brand-600">{count}</span>
                     </div>
                     <div className="h-3 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
-                      <motion.div 
+                      <div 
                         className={`h-full ${['bg-brand-500', 'bg-teal-500', 'bg-amber-500', 'bg-indigo-500', 'bg-blue-500', 'bg-rose-500'][idx % 6]}`}
-                        initial={{ width: 0 }}
-                        animate={{ width: `${(count / (stats?.totalCertificates || 1)) * 100}%` }}
-                        transition={{ duration: 1, delay: idx * 0.1 }}
+                        style={{ width: `${(count / (stats?.totalCertificates || 1)) * 100}%` }}
                       />
                     </div>
                   </div>
@@ -324,10 +305,7 @@ const StatCard = ({ icon, label, value, trend, color, chartData }) => {
   };
 
   return (
-    <motion.div 
-      whileHover={{ y: -5 }}
-      className="glass-card relative overflow-hidden rounded-[2.5rem] p-6 transition-all"
-    >
+    <div className="card relative overflow-hidden rounded-[2.5rem] p-6 transition-all hover:-translate-y-1">
       <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-2xl text-white ${colorMap[color].split(' ')[0]}`}>
         {icon}
       </div>
@@ -336,13 +314,9 @@ const StatCard = ({ icon, label, value, trend, color, chartData }) => {
         <div className="mt-1 text-xs font-bold text-slate-500 uppercase tracking-wider">{label}</div>
       </div>
       
-      {/* Mini Sparkline Chart */}
       <div className="absolute bottom-0 left-0 right-0 h-16 opacity-30">
         <svg viewBox="0 0 100 30" className="h-full w-full" preserveAspectRatio="none">
-          <motion.path
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ duration: 2 }}
+          <path
             d={`M 0 30 ${chartData.map((v, i) => `L ${i * (100 / (chartData.length - 1))} ${30 - v/4}`).join(' ')} L 100 30 Z`}
             fill={`url(#gradient-${color})`}
             stroke="none"
@@ -364,7 +338,7 @@ const StatCard = ({ icon, label, value, trend, color, chartData }) => {
           <ArrowUpRight className="h-3 w-3 text-slate-400" />
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
@@ -396,11 +370,10 @@ const HealthMetric = ({ icon, label, value, status, color }) => {
 const GrowthChart = ({ data }) => {
   if (!data || data.length === 0) return null;
 
-  const max = Math.max(...data.map(d => d.count), 5); // Ensure at least some height
+  const max = Math.max(...data.map(d => d.count), 5);
   const width = 1000;
   const height = 300;
   
-  // Create smooth bezier curve points
   const points = data.map((d, i) => ({
     x: i * (width / (data.length - 1 || 1)),
     y: height - (d.count / max) * height
@@ -441,7 +414,6 @@ const GrowthChart = ({ data }) => {
           </filter>
         </defs>
 
-        {/* Grid Lines */}
         {[0, 0.25, 0.5, 0.75, 1].map(v => (
           <line 
             key={v} 
@@ -453,57 +425,41 @@ const GrowthChart = ({ data }) => {
           />
         ))}
         
-        {/* Area Path */}
-        <motion.path
-          initial={{ opacity: 0, d: `M 0 ${height} L ${width} ${height} L 0 ${height} Z` }}
-          animate={{ opacity: 1, d: areaPath }}
-          transition={{ duration: 1.5, ease: "easeOut" }}
+        <path
+          d={areaPath}
           fill="url(#area-gradient)"
+          className="animate-[fadeIn_1.5s_ease-out_forwards]"
         />
         
-        {/* Glowing Base Line */}
-        <motion.path
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 2, ease: "easeInOut" }}
+        <path
           d={linePath}
           fill="none"
           stroke="url(#line-gradient)"
           strokeWidth="6"
           strokeLinecap="round"
           filter="url(#glow)"
-          className="opacity-20"
+          className="opacity-20 animate-[drawLine_2s_ease-in-out_forwards]"
         />
 
-        {/* Main Line Path */}
-        <motion.path
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 1.5, ease: "easeInOut" }}
+        <path
           d={linePath}
           fill="none"
           stroke="url(#line-gradient)"
           strokeWidth="4"
           strokeLinecap="round"
           strokeLinejoin="round"
+          className="animate-[drawLine_1.5s_ease-in-out_forwards]"
         />
 
-        {/* Interactive Data Points */}
         {points.map((p, i) => (
           <g key={i}>
-            <motion.circle
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 1 + i * 0.1 }}
+            <circle
               cx={p.x}
               cy={p.y}
               r="8"
               className="fill-white dark:fill-slate-900 opacity-0 group-hover:opacity-100 transition-opacity"
             />
-            <motion.circle
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.8 + i * 0.1 }}
+            <circle
               cx={p.x}
               cy={p.y}
               r="5"
@@ -514,7 +470,6 @@ const GrowthChart = ({ data }) => {
         ))}
       </svg>
       
-      {/* X-Axis Labels */}
       <div className="mt-6 flex justify-between px-2">
         {data.map((d, i) => (
           <span key={i} className="text-[11px] font-black uppercase tracking-tighter text-slate-400 dark:text-slate-500">

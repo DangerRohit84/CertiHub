@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
 import { Sparkles, AtSign, CheckCircle2, XCircle } from 'lucide-react';
 import { db } from '../../firebase/firebase';
 import { collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
@@ -68,8 +67,8 @@ const ForcedUsernameModal = ({ dbUser, user, onUsernameSet }) => {
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center px-6">
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl" />
-      <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} className="relative w-full max-w-md bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden p-10">
+      <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl" />
+      <div className="relative w-full max-w-md bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden p-10">
         <div className="text-center mb-8">
           <div className="w-20 h-20 bg-brand-50 dark:bg-brand-500/10 text-brand-600 rounded-3xl flex items-center justify-center mx-auto mb-6">
             <Sparkles className="w-10 h-10" />
@@ -109,7 +108,7 @@ const ForcedUsernameModal = ({ dbUser, user, onUsernameSet }) => {
             {usernameSaving ? "Saving..." : "Claim Username"}
           </button>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };

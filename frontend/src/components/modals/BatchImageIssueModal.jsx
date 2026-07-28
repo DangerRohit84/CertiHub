@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
 import { UploadCloud, FileText } from 'lucide-react';
 import axios from 'axios';
 import { auth } from '../../firebase/firebase';
@@ -61,12 +60,8 @@ const BatchImageIssueModal = ({ onClose, defaultDomain = '' }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-950/20 backdrop-blur-sm">
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 w-full max-w-lg p-8 rounded-3xl shadow-2xl relative"
-      >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-950/50">
+      <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 w-full max-w-lg p-8 rounded-3xl shadow-2xl relative">
         <button 
           onClick={onClose}
           className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white"
@@ -165,7 +160,7 @@ const BatchImageIssueModal = ({ onClose, defaultDomain = '' }) => {
         >
           {issuing ? 'Processing...' : (domainScope === 'internal' ? `Batch Issue ${imageFiles.length} Records` : 'Issue to student')}
         </button>
-      </motion.div>
+      </div>
     </div>
   );
 };

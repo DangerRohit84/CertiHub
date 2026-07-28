@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { GraduationCap, Plus, ShieldCheck, Award } from 'lucide-react';
 import axios from 'axios';
 import { auth, db } from '../firebase/firebase';
@@ -96,7 +95,7 @@ const InstitutionDashboard = () => {
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
-        <div className="glass-card p-8 rounded-[2.5rem]">
+        <div className="card p-8 rounded-[2.5rem]">
           <div className="flex items-center gap-4 mb-4">
             <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl dark:bg-indigo-900/20">
               <GraduationCap className="w-6 h-6" />
@@ -109,7 +108,7 @@ const InstitutionDashboard = () => {
         </div>
       </div>
 
-      <div className="mt-12 glass-card p-8 rounded-[2.5rem]">
+      <div className="mt-12 card p-8 rounded-[2.5rem]">
         <h2 className="text-2xl font-black text-slate-950 dark:text-white mb-8">Department Heads</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-left">
@@ -144,12 +143,8 @@ const InstitutionDashboard = () => {
       </div>
 
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-950/20 backdrop-blur-sm">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white dark:bg-slate-900 w-full max-w-md p-8 rounded-[2.5rem] shadow-2xl"
-          >
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-950/50">
+          <div className="bg-white dark:bg-slate-900 w-full max-w-md p-8 rounded-[2.5rem] shadow-2xl">
             <h3 className="text-2xl font-black text-slate-950 dark:text-white mb-6">Provision New HOD</h3>
             <form onSubmit={handleCreateHOD} className="space-y-4">
               <div>
@@ -196,7 +191,7 @@ const InstitutionDashboard = () => {
                 </button>
               </div>
             </form>
-          </motion.div>
+          </div>
         </div>
       )}
       {showIssueModal && (

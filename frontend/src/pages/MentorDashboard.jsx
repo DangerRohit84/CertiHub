@@ -33,13 +33,13 @@ const MentorDashboard = () => {
       </div>
 
       <div className="grid md:grid-cols-4 gap-6 mb-12">
-        <div className="md:col-span-1 glass-card p-6 rounded-[2rem]">
+        <div className="md:col-span-1 card p-6 rounded-[2rem]">
           <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">My Roster</div>
           <div className="text-3xl font-black text-slate-950 dark:text-white">{students.length}</div>
         </div>
       </div>
 
-      <div className="glass-card p-8 rounded-[2.5rem]">
+      <div className="card p-8 rounded-[2.5rem]">
         <h3 className="text-2xl font-black text-slate-950 dark:text-white mb-8">Assigned Students</h3>
         <div className="space-y-4">
           {students.length > 0 ? students.map(student => (

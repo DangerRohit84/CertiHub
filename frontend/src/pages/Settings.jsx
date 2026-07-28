@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { auth, db } from '../firebase/firebase';
 import { deleteUser, onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
@@ -13,7 +12,7 @@ const Settings = () => {
   
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [usernameInput, setUsernameInput] = useState('');
-  const [usernameStatus, setUsernameStatus] = useState(''); // '', 'checking', 'available', 'taken', 'invalid'
+  const [usernameStatus, setUsernameStatus] = useState('');
   const [usernameMsg, setUsernameMsg] = useState('');
   
   const [isEditingName, setIsEditingName] = useState(false);
@@ -145,12 +144,7 @@ const Settings = () => {
       </div>
 
       <div className="space-y-8">
-        {/* Profile Info Section */}
-        <motion.div 
-          className="glass-card p-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
+        <div className="card p-8">
           <div className="flex items-center gap-2 mb-6 border-b border-slate-100 pb-4 dark:border-white/10">
             <User className="w-5 h-5 text-slate-500" />
             <h2 className="text-xl font-bold text-slate-800 dark:text-white">Profile Information</h2>
@@ -257,15 +251,9 @@ const Settings = () => {
               {isEditingUsername && usernameStatus === 'invalid' && <p className="mt-1 text-xs text-red-500">At least 3 characters, no special symbols</p>}
             </div>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Danger Zone */}
-        <motion.div 
-          className="glass-card p-8 border border-red-100 dark:border-red-500/20"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
+        <div className="card p-8 border border-red-100 dark:border-red-500/20">
           <div className="flex items-center gap-2 mb-6 border-b border-red-50 pb-4 dark:border-red-500/20">
             <AlertTriangle className="w-5 h-5 text-red-500" />
             <h2 className="text-xl font-bold text-red-600">Danger Zone</h2>
@@ -288,7 +276,7 @@ const Settings = () => {
               Delete Account
             </button>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

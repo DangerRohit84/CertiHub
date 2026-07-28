@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '../firebase/firebase';
 import { ArrowLeft, CheckCircle, Download, X } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
@@ -156,13 +155,8 @@ const CertificateDetails = () => {
 
       <div className="grid lg:grid-cols-5 gap-10">
         
-        {/* Left Column: Image */}
         <div className="lg:col-span-2 space-y-6">
-          <motion.div 
-            className="glass-card overflow-hidden p-2"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-          >
+          <div className="card overflow-hidden p-2">
             <div className="rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
               <img 
                 src={cert.cloudinaryUrl?.replace(/\.pdf$/i, '.jpg')} 
@@ -171,15 +165,11 @@ const CertificateDetails = () => {
                 onError={(e) => { e.target.src = 'https://placehold.co/600x400/e2e8f0/475569?text=PDF+Document' }}
               />
             </div>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Right Column: Details */}
         <div className="lg:col-span-3 space-y-8">
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-          >
+          <div>
             <div className="eyebrow mb-4">Official Verification</div>
             
             <>
@@ -244,13 +234,8 @@ const CertificateDetails = () => {
               )}
             </div>
             
-            {/* Mentor Verification Panel */}
             {userRole === 'mentor' && (
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mt-12 p-8 rounded-[2rem] bg-slate-900 text-white shadow-2xl"
-              >
+              <div className="mt-12 p-8 rounded-[2rem] bg-slate-900 text-white shadow-2xl">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="p-2 bg-brand-500 rounded-lg">
                     <CheckCircle className="w-5 h-5 text-white" />
@@ -287,9 +272,9 @@ const CertificateDetails = () => {
                     </div>
                   </>
                 )}
-              </motion.div>
+              </div>
             )}
-          </motion.div>
+          </div>
         </div>
       </div>
     </div>

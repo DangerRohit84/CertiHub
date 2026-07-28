@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import logo from '../assets/logo.png';
 import { useParams, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import { ShieldCheck, ExternalLink, Download, BarChart3, Users, Award, TrendingUp, PieChart, Activity } from 'lucide-react';
@@ -21,7 +20,6 @@ const Portfolio = () => {
   useEffect(() => {
     const fetchPortfolio = async () => {
       try {
-        // Step 1: Find user by username
         const usersRef = collection(db, "users");
         const qUser = query(usersRef, where("username", "==", username.toLowerCase()));
         const userSnapshot = await getDocs(qUser);
@@ -36,17 +34,13 @@ const Portfolio = () => {
 
         const isEntity = ['institution', 'org_admin', 'hod', 'mentor'].includes(userData.role);
 
-        // Step 2: Fetch certificates based on role
         let q;
         if (isEntity) {
-          // Fetch certificates issued by this entity (or their parent institution if HOD/Mentor)
-          // For simplicity, we query by issuerId or issuer name if id not present
           q = query(
             collection(db, "certificates"), 
             where("issuerId", "==", userData.uid)
           );
         } else {
-          // Standard student portfolio
           q = query(collection(db, "certificates"), where("userId", "==", userData.uid));
         }
 
@@ -59,7 +53,6 @@ const Portfolio = () => {
           const d = doc.data();
           certs.push({ id: doc.id, ...d });
           
-          // Calculate stats for Analytics
           if (d.skills) {
             d.skills.forEach(s => {
               skillsMap[s] = (skillsMap[s] || 0) + 1;
@@ -73,7 +66,6 @@ const Portfolio = () => {
         certs.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
         setCertificates(certs);
 
-        // Process Top Skills
         const topSkills = Object.entries(skillsMap)
           .sort((a, b) => b[1] - a[1])
           .slice(0, 5)
@@ -81,7 +73,7 @@ const Portfolio = () => {
 
         setStats({
           totalIssued: certs.length,
-          verifiedRate: certs.length > 0 ? 100 : 0, // In this system, issued certs are pre-verified
+          verifiedRate: certs.length > 0 ? 100 : 0,
           topSkills,
           categoryBreakdown: categories
         });
@@ -113,15 +105,10 @@ const Portfolio = () => {
 
   return (
     <div className="app-shell py-12">
-      {/* Dynamic Header */}
       <div className="mx-auto mb-16 max-w-3xl text-center">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="mb-6 inline-flex h-24 w-24 items-center justify-center rounded-[2rem] bg-white p-3 shadow-xl dark:bg-slate-900 border border-slate-100 dark:border-white/5"
-        >
+        <div className="mb-6 inline-flex h-24 w-24 items-center justify-center rounded-[2rem] bg-white p-3 shadow-xl dark:bg-slate-900 border border-slate-100 dark:border-white/5">
           <img src={logo} alt="CertiHub Logo" className="w-full h-full object-contain" />
-        </motion.div>
+        </div>
         
         <h1 className="mb-4 text-4xl font-black tracking-tight text-slate-950 dark:text-white">
           {isEntity ? "Institutional Insights" : "Verified Credential Portfolio"}
@@ -141,9 +128,7 @@ const Portfolio = () => {
       </div>
 
       {isEntity ? (
-        /* --- ANALYTICS VIEW --- */
         <div className="space-y-10">
-          {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               { label: 'Total Issued', value: stats.totalIssued, icon: Award, color: 'brand' },
@@ -151,12 +136,9 @@ const Portfolio = () => {
               { label: 'Avg. Skill Gain', value: '3.4', icon: TrendingUp, color: 'green' },
               { label: 'Verification Status', value: '100%', icon: Activity, color: 'purple' },
             ].map((stat, i) => (
-              <motion.div 
+              <div 
                 key={i}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className="glass-card p-6 flex items-center gap-5"
+                className="card p-6 flex items-center gap-5"
               >
                 <div className={`h-12 w-12 rounded-2xl flex items-center justify-center bg-${stat.color}-500/10 text-${stat.color}-600 dark:text-${stat.color}-400`}>
                   <stat.icon className="w-6 h-6" />
@@ -165,17 +147,12 @@ const Portfolio = () => {
                   <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{stat.label}</div>
                   <div className="text-2xl font-black text-slate-900 dark:text-white">{stat.value}</div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* Top Skills Chart */}
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="lg:col-span-2 glass-card p-8"
-            >
+            <div className="lg:col-span-2 card p-8">
               <div className="flex items-center justify-between mb-8">
                 <h3 className="text-lg font-black flex items-center gap-2"><BarChart3 className="w-5 h-5 text-brand-600" /> Talent Distribution</h3>
                 <span className="text-[10px] font-black uppercase text-slate-400">Most Common Verified Skills</span>
@@ -188,10 +165,9 @@ const Portfolio = () => {
                       <span className="text-brand-600">{skill.count} Mentions</span>
                     </div>
                     <div className="h-2 w-full bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
-                      <motion.div 
-                        initial={{ width: 0 }}
-                        animate={{ width: `${(skill.count / stats.totalIssued) * 100}%` }}
+                      <div 
                         className="h-full bg-brand-600 rounded-full"
+                        style={{ width: `${(skill.count / stats.totalIssued) * 100}%` }}
                       />
                     </div>
                   </div>
@@ -199,14 +175,9 @@ const Portfolio = () => {
                   <div className="py-10 text-center text-slate-400 font-bold italic">No skill data available yet.</div>
                 )}
               </div>
-            </motion.div>
+            </div>
 
-            {/* Categories */}
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="glass-card p-8"
-            >
+            <div className="card p-8">
               <div className="flex items-center justify-between mb-8">
                 <h3 className="text-lg font-black flex items-center gap-2"><PieChart className="w-5 h-5 text-brand-600" /> Categories</h3>
               </div>
@@ -221,11 +192,10 @@ const Portfolio = () => {
                   <div className="py-10 text-center text-slate-400 font-bold italic">No category data.</div>
                 )}
               </div>
-            </motion.div>
+            </div>
           </div>
 
-          {/* Recent Public Ledger (Anonymized) */}
-          <div className="glass-card overflow-hidden">
+          <div className="card overflow-hidden">
             <div className="p-6 border-b border-slate-100 dark:border-white/5 flex items-center justify-between">
               <h3 className="text-sm font-black uppercase tracking-widest text-slate-400">Public Issuance Ledger</h3>
               <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
@@ -266,20 +236,16 @@ const Portfolio = () => {
           </div>
         </div>
       ) : (
-        /* --- PORTFOLIO VIEW --- */
         certificates.length === 0 ? (
-          <div className="panel mx-auto max-w-2xl py-16 text-center">
+          <div className="card p-6 mx-auto max-w-2xl py-16 text-center">
             <p className="text-slate-500 text-lg">This user hasn't added any public certificates yet.</p>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {certificates.map((cert, index) => (
-              <motion.div 
+            {certificates.map((cert) => (
+              <div 
                 key={cert.id}
-                className="glass-card overflow-hidden flex flex-col hover:shadow-xl transition-shadow duration-300"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
+                className="card overflow-hidden flex flex-col hover:shadow-xl transition-shadow duration-300"
               >
                 <div className="h-48 bg-slate-100 overflow-hidden relative border-b border-slate-200 group">
                   <img 
@@ -290,7 +256,6 @@ const Portfolio = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
                   
-                  {/* Date Badge */}
                   <div className="absolute top-4 right-4 rounded-full bg-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-white backdrop-blur-md border border-white/20">
                     {cert.date || ''}
                   </div>
@@ -335,7 +300,7 @@ const Portfolio = () => {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         )
@@ -345,4 +310,3 @@ const Portfolio = () => {
 };
 
 export default Portfolio;
-

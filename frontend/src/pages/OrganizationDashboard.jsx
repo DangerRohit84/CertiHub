@@ -51,7 +51,7 @@ const OrganizationDashboard = () => {
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
-        <div className="glass-card p-8 rounded-[2.5rem]">
+        <div className="card p-8 rounded-[2.5rem]">
           <div className="flex items-center gap-4 mb-4">
             <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl dark:bg-blue-900/20">
               <Building2 className="w-6 h-6" />
@@ -63,7 +63,7 @@ const OrganizationDashboard = () => {
           </div>
         </div>
         
-        <div className="glass-card p-8 rounded-[2.5rem]">
+        <div className="card p-8 rounded-[2.5rem]">
           <div className="flex items-center gap-4 mb-4">
             <div className="p-3 bg-brand-50 text-brand-600 rounded-2xl dark:bg-brand-900/20">
               <CheckCircle2 className="w-6 h-6" />
@@ -75,7 +75,7 @@ const OrganizationDashboard = () => {
           </div>
         </div>
 
-        <div className="glass-card p-8 rounded-[2.5rem]">
+        <div className="card p-8 rounded-[2.5rem]">
           <div className="flex items-center gap-4 mb-4">
             <div className="p-3 bg-purple-50 text-purple-600 rounded-2xl dark:bg-purple-900/20">
               <Users className="w-6 h-6" />
@@ -88,7 +88,7 @@ const OrganizationDashboard = () => {
         </div>
       </div>
 
-      <div className="mt-12 glass-card p-8 rounded-[2.5rem] bg-gradient-to-br from-brand-600 to-indigo-700 text-white border-0">
+      <div className="mt-12 card p-8 rounded-[2.5rem] bg-gradient-to-br from-brand-600 to-indigo-700 text-white border-0">
         <h2 className="text-3xl font-black mb-4">AI Smart Credentialing</h2>
         <p className="text-brand-100 font-medium leading-relaxed max-w-2xl mb-8">
           Upload certificate files and a simple CSV mapping file. Our AI will automatically analyze the certificates, extract the candidate names, and match them with your CSV to send the credentials to the right employees.

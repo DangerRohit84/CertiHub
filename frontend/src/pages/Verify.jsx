@@ -4,7 +4,6 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import { ShieldCheck, Calendar, User, Building2, Award, Download, CheckCircle2, XCircle } from 'lucide-react';
 import logo from '../assets/logo.png';
-import { motion } from 'framer-motion';
 
 const Verify = () => {
   const { id } = useParams();
@@ -50,25 +49,16 @@ const Verify = () => {
         </div>
 
         {error ? (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="rounded-[2.5rem] bg-white p-12 text-center shadow-2xl dark:bg-slate-900 border border-red-100 dark:border-red-900/20"
-          >
+          <div className="rounded-[2.5rem] bg-white p-12 text-center shadow-2xl dark:bg-slate-900 border border-red-100 dark:border-red-900/20">
             <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-red-50 text-red-500 dark:bg-red-900/20">
               <XCircle className="h-10 w-10" />
             </div>
             <h2 className="text-2xl font-black text-slate-900 dark:text-white">Verification Failed</h2>
             <p className="mt-4 text-slate-500">{error}</p>
             <Link to="/" className="mt-8 inline-block btn-primary">Return to Homepage</Link>
-          </motion.div>
+          </div>
         ) : (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="overflow-hidden rounded-[3rem] bg-white shadow-2xl dark:bg-slate-900 border border-slate-100 dark:border-white/5"
-          >
-            {/* Verification Status Banner */}
+          <div className="overflow-hidden rounded-[3rem] bg-white shadow-2xl dark:bg-slate-900 border border-slate-100 dark:border-white/5">
             <div className="flex items-center justify-between bg-emerald-500 px-8 py-6 text-white sm:px-12">
               <div className="flex items-center gap-4">
                 <div className="rounded-full bg-white/20 p-2">
@@ -159,7 +149,7 @@ const Verify = () => {
                 </p>
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
         
         <p className="mt-12 text-center text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
