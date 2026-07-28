@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { UploadCloud, FileText, Search, ExternalLink, Trash2, Target, ChevronRight, Share2, Copy, Check, X, Sparkles, CheckCircle2, Tag } from 'lucide-react';
+import { UploadCloud, FileText, Search, ExternalLink, Trash2, Target, ChevronRight, Share2, Copy, Check, X, Sparkles, CheckCircle2, Tag, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { auth, db } from '../firebase/firebase';
@@ -8,13 +8,33 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { toast } from 'react-hot-toast';
 import ForcedUsernameModal from '../components/modals/ForcedUsernameModal';
 
+const CATEGORY_CONFIG_KEY = 'certihub_category_config';
+
+const DEFAULT_CATEGORIES = [
+  { name: 'Internship', skipAI: false },
+  { name: 'Course', skipAI: false },
+  { name: 'Project', skipAI: false },
+  { name: 'Achievement', skipAI: false },
+  { name: 'Workshop', skipAI: false },
+  { name: 'Competition', skipAI: false },
+  { name: 'Volunteer', skipAI: false },
+  { name: 'Participation', skipAI: true },
+  { name: 'Other', skipAI: false },
+];
+
+const loadCategoryConfig = () => {
+  try {
+    const saved = localStorage.getItem(CATEGORY_CONFIG_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch { /* invalid JSON */ }
+  return DEFAULT_CATEGORIES;
+};
+
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [certificates, setCertificates] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
-  const [file, setFile] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState('All');
   const [fetching, setFetching] = useState(true);
   const [careerStatus, setCareerStatus] = useState(null);
   const [dbUser, setDbUser] = useState(null);
@@ -26,7 +46,23 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('all');
   const [editingCategoryId, setEditingCategoryId] = useState(null);
   const [editingCategoryValue, setEditingCategoryValue] = useState('');
+
+  const [categoryConfig, setCategoryConfig] = useState(loadCategoryConfig);
+  const [showCategorySettings, setShowCategorySettings] = useState(false);
+  const [newCatName, setNewCatName] = useState('');
+  const [newCatSkipAI, setNewCatSkipAI] = useState(false);
+
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [pendingFile, setPendingFile] = useState(null);
+  const [uploadCategory, setUploadCategory] = useState('');
+
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    localStorage.setItem(CATEGORY_CONFIG_KEY, JSON.stringify(categoryConfig));
+  }, [categoryConfig]);
+
+  const presetCategories = categoryConfig.map(c => c.name);
 
   async function fetchCareerStatus(certs) {
     try {
@@ -43,13 +79,13 @@ const Dashboard = () => {
       setFetching(true);
       const q = query(collection(db, "certificates"), where("userId", "==", userId));
       const querySnapshot = await getDocs(q);
-      const certs = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const certs = querySnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
       certs.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
       setCertificates(certs);
       if (email) {
         const consentQ = query(collection(db, "certificates"), where("studentEmail", "==", email), where("consentStatus", "==", "pending"));
         const consentSnapshot = await getDocs(consentQ);
-        setPendingConsents(consentSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        setPendingConsents(consentSnapshot.docs.map(d => ({ id: d.id, ...d.data() })));
       }
       if (certs.length > 0) fetchCareerStatus(certs);
     } catch (error) {
@@ -86,34 +122,96 @@ const Dashboard = () => {
     return () => unsubscribe();
   }, []);
 
-  const handleFileChange = async (e) => {
+  const handleFileSelect = (e) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
-      setFile(selectedFile);
-      await handleUpload(selectedFile);
+      if (selectedFile.size > 10 * 1024 * 1024) {
+        toast.error("File is too large! Maximum size is 10MB.");
+        return;
+      }
+      setPendingFile(selectedFile);
+      setUploadCategory('');
+      setShowUploadModal(true);
     }
+    e.target.value = '';
   };
 
-  const handleUpload = async (selectedFile) => {
-    const fileToUpload = selectedFile || file;
-    if (!fileToUpload || !user) return;
-    if (fileToUpload.size > 10 * 1024 * 1024) { toast.error("File is too large! Maximum size is 10MB."); return; }
+  const handleUpload = async () => {
+    if (!pendingFile || !user || !uploadCategory) return;
+
+    const catConfig = categoryConfig.find(c => c.name === uploadCategory);
+    const skipAI = catConfig?.skipAI || false;
+
+    setShowUploadModal(false);
     setLoading(true);
-    const uploadToast = toast.loading("Analyzing certificate...");
-    const formData = new FormData();
-    formData.append('certificate', fileToUpload);
+    const uploadToast = toast.loading(skipAI ? "Uploading certificate..." : "Analyzing certificate...");
+
+    if (skipAI) {
+      try {
+        const formData = new FormData();
+        formData.append('certificate', pendingFile);
+        const token = await auth.currentUser?.getIdToken();
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/upload-only`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${token}` }
+        });
+        const newCert = {
+          userId: user.uid,
+          cloudinaryUrl: response.data.cloudinaryUrl,
+          title: pendingFile.name.replace(/\.[^/.]+$/, ''),
+          issuer: 'Personal Upload',
+          userCategory: uploadCategory,
+          category: uploadCategory,
+          skills: [],
+          aiSummary: '',
+          resumeBullets: [],
+          createdAt: serverTimestamp()
+        };
+        const docRef = await addDoc(collection(db, "certificates"), newCert);
+        setCertificates([{ id: docRef.id, ...newCert, createdAt: { toMillis: () => Date.now() } }, ...certificates]);
+        toast.success("Certificate uploaded!", { id: uploadToast });
+      } catch (error) {
+        console.error("Upload failed", error);
+        toast.error("Failed to upload certificate.", { id: uploadToast });
+      } finally {
+        setLoading(false);
+        setPendingFile(null);
+        setUploadCategory('');
+      }
+      return;
+    }
+
     try {
+      const formData = new FormData();
+      formData.append('certificate', pendingFile);
       const token = await auth.currentUser?.getIdToken();
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/analyze`, formData, { headers: { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${token}` } });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/analyze`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${token}` }
+      });
       const data = response.data;
-      const newCert = { userId: user.uid, cloudinaryUrl: data.cloudinaryUrl, candidateName: data.aiData.candidateName || '', title: data.aiData.certificateTitle || 'Unknown Certificate', issuer: data.aiData.organization || 'Unknown Issuer', category: data.aiData.category || 'Other', skills: data.aiData.skills || [], aiSummary: data.aiData.aiSummary || '', resumeBullets: data.aiData.resumeBullets || [], createdAt: serverTimestamp() };
+      const newCert = {
+        userId: user.uid,
+        cloudinaryUrl: data.cloudinaryUrl,
+        candidateName: data.aiData.candidateName || '',
+        title: data.aiData.certificateTitle || 'Unknown Certificate',
+        issuer: data.aiData.organization || 'Unknown Issuer',
+        category: data.aiData.category || 'Other',
+        userCategory: uploadCategory,
+        skills: data.aiData.skills || [],
+        aiSummary: data.aiData.aiSummary || '',
+        resumeBullets: data.aiData.resumeBullets || [],
+        createdAt: serverTimestamp()
+      };
       const docRef = await addDoc(collection(db, "certificates"), newCert);
       setCertificates([{ id: docRef.id, ...newCert, createdAt: { toMillis: () => Date.now() } }, ...certificates]);
       toast.success("Certificate analyzed successfully!", { id: uploadToast });
     } catch (error) {
       console.error("Upload failed", error);
       toast.error("Failed to analyze certificate.", { id: uploadToast });
-    } finally { setLoading(false); setFile(null); }
+    } finally {
+      setLoading(false);
+      setPendingFile(null);
+      setUploadCategory('');
+    }
   };
 
   const handleDelete = async (certId) => {
@@ -152,8 +250,6 @@ const Dashboard = () => {
 
   const copyToClipboard = () => { navigator.clipboard.writeText(generatedPost); setCopied(true); setTimeout(() => setCopied(false), 2000); };
 
-  const PRESET_CATEGORIES = ['Internship', 'Course', 'Project', 'Achievement', 'Workshop', 'Competition', 'Volunteer', 'Other'];
-
   const handleUpdateCategory = async (certId, newCategory) => {
     try {
       const certRef = doc(db, "certificates", certId);
@@ -177,16 +273,38 @@ const Dashboard = () => {
     } catch { toast.error("Handshake failed"); }
   };
 
-  const categories = ["All", ...new Set(certificates.map(c => c.category || "Other"))].sort();
+  const addCategoryConfig = () => {
+    if (!newCatName.trim()) return;
+    if (categoryConfig.some(c => c.name.toLowerCase() === newCatName.trim().toLowerCase())) {
+      toast.error("Category already exists");
+      return;
+    }
+    setCategoryConfig([...categoryConfig, { name: newCatName.trim(), skipAI: newCatSkipAI }]);
+    setNewCatName('');
+    setNewCatSkipAI(false);
+    toast.success("Category added!");
+  };
+
+  const removeCategoryConfig = (name) => {
+    setCategoryConfig(categoryConfig.filter(c => c.name !== name));
+  };
+
+  const toggleSkipAI = (name) => {
+    setCategoryConfig(categoryConfig.map(c => c.name === name ? { ...c, skipAI: !c.skipAI } : c));
+  };
+
+  const categories = ["All", ...new Set(certificates.map(c => c.userCategory || "Other"))].sort();
   const filteredCerts = certificates.filter(c => {
     const matchesSearch = (c.title || "").toLowerCase().includes(searchTerm.toLowerCase()) || (c.issuer || "").toLowerCase().includes(searchTerm.toLowerCase());
-    const itemCategory = c.category || 'Other';
+    const itemCategory = c.userCategory || 'Other';
     const matchesCategory = selectedCategory === 'All' || itemCategory.toLowerCase() === selectedCategory.toLowerCase();
     const isVerified = c.isInstitutional || c.verificationStatus === 'verified';
     if (activeTab === 'verified') return matchesSearch && matchesCategory && isVerified;
     if (activeTab === 'personal') return matchesSearch && matchesCategory && !isVerified;
     return matchesSearch && matchesCategory;
   });
+
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   if (!user && !fetching) return <div className="py-20 text-center font-medium text-slate-500">Please log in to view your dashboard.</div>;
 
@@ -202,7 +320,7 @@ const Dashboard = () => {
         </div>
         {user && (
           <div className="flex flex-col sm:flex-row gap-3 mt-3 md:mt-0">
-            <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*,application/pdf" />
+            <input type="file" ref={fileInputRef} onChange={handleFileSelect} className="hidden" accept="image/*,application/pdf" />
             <button onClick={() => fileInputRef.current?.click()} disabled={loading} className="btn-primary">
               <UploadCloud className="h-4 w-4" /> {loading ? "Analyzing..." : "Upload Certificate"}
             </button>
@@ -275,9 +393,14 @@ const Dashboard = () => {
               ))}
             </div>
           </div>
-          <div className="relative w-full sm:w-56">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input type="text" placeholder="Search skills..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="field py-2.5 pl-9 pr-3 text-sm" />
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="relative flex-1 sm:w-56">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input type="text" placeholder="Search skills..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="field py-2.5 pl-9 pr-3 text-sm" />
+            </div>
+            <button onClick={() => setShowCategorySettings(true)} className="p-2.5 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] text-slate-400 hover:text-brand-600 transition-colors" title="Category Settings">
+              <Settings className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
@@ -314,14 +437,14 @@ const Dashboard = () => {
                     )}
                   </div>
                   <p className="mb-2 text-xs font-medium text-slate-500 dark:text-slate-400">{cert.issuer}</p>
-                  {cert.category && (
-                    <div className="mb-2 flex items-center gap-1.5">
+                  {cert.category && cert.category !== cert.userCategory && (
+                    <div className="mb-1.5 flex items-center gap-1.5">
                       <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Domain:</span>
                       <span className="chip text-[9px]">{cert.category}</span>
                     </div>
                   )}
                   {cert.userCategory && (
-                    <div className="mb-2 flex items-center gap-1.5">
+                    <div className="mb-1.5 flex items-center gap-1.5">
                       <Tag className="w-3 h-3 text-brand-500" />
                       <span className="text-[9px] font-semibold text-brand-600 dark:text-brand-400">{cert.userCategory}</span>
                     </div>
@@ -342,10 +465,10 @@ const Dashboard = () => {
                         <Tag className="w-4 h-4" />
                       </button>
                       {editingCategoryId === cert.id && (
-                        <div className="absolute bottom-full left-0 mb-2 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/[0.08] rounded-xl shadow-float p-2 z-20">
+                        <div className="absolute bottom-full right-0 mb-2 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/[0.08] rounded-xl shadow-float p-2 z-50">
                           <div className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 px-2 mb-1.5">Category</div>
-                          <div className="grid grid-cols-2 gap-1 mb-2">
-                            {PRESET_CATEGORIES.map(cat => (
+                          <div className="grid grid-cols-2 gap-1 mb-2 max-h-40 overflow-y-auto">
+                            {presetCategories.map(cat => (
                               <button
                                 key={cat}
                                 onClick={() => handleUpdateCategory(cert.id, cat)}
@@ -386,21 +509,137 @@ const Dashboard = () => {
         )}
       </div>
 
+      {/* Upload Category Modal */}
+      {showUploadModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center px-6">
+          <div onClick={() => { setShowUploadModal(false); setPendingFile(null); }} className="absolute inset-0 bg-slate-900/60" />
+          <div className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-float p-6">
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 bg-brand-600 text-white rounded-lg flex items-center justify-center"><UploadCloud className="w-5 h-5" /></div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">Select Category</h3>
+                  <p className="text-xs text-slate-500">{pendingFile?.name}</p>
+                </div>
+              </div>
+              <button onClick={() => { setShowUploadModal(false); setPendingFile(null); }} className="p-1.5 hover:bg-slate-100 dark:hover:bg-white/[0.06] rounded-lg transition-colors"><X className="w-4 h-4 text-slate-400" /></button>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 mb-5">
+              {categoryConfig.map(cat => (
+                <button
+                  key={cat.name}
+                  onClick={() => setUploadCategory(cat.name)}
+                  className={`relative p-3 rounded-xl border-2 text-left transition-all ${uploadCategory === cat.name ? 'border-brand-600 bg-brand-50 dark:bg-brand-500/10' : 'border-slate-200 dark:border-white/[0.08] hover:border-brand-300'}`}
+                >
+                  <div className="text-xs font-semibold text-slate-900 dark:text-white">{cat.name}</div>
+                  {cat.skipAI && (
+                    <div className="mt-1 text-[9px] font-medium text-amber-600 dark:text-amber-400">No AI</div>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {uploadCategory && (
+              <div className="mb-4 p-3 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.08]">
+                <div className="flex items-center gap-2">
+                  {categoryConfig.find(c => c.name === uploadCategory)?.skipAI ? (
+                    <>
+                      <div className="w-2 h-2 rounded-full bg-amber-500" />
+                      <span className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                        <strong>{uploadCategory}</strong> — Certificate will be uploaded without AI analysis
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-2 h-2 rounded-full bg-brand-500" />
+                      <span className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                        <strong>{uploadCategory}</strong> — AI will extract skills, title, and summary
+                      </span>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+
+            <button
+              onClick={handleUpload}
+              disabled={!uploadCategory || loading}
+              className="btn-primary w-full py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Processing...' : 'Upload Certificate'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Category Settings Modal */}
+      {showCategorySettings && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center px-6">
+          <div onClick={() => setShowCategorySettings(false)} className="absolute inset-0 bg-slate-900/60" />
+          <div className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-float p-6 max-h-[80vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 bg-brand-600 text-white rounded-lg flex items-center justify-center"><Settings className="w-5 h-5" /></div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">Category Settings</h3>
+              </div>
+              <button onClick={() => setShowCategorySettings(false)} className="p-1.5 hover:bg-slate-100 dark:hover:bg-white/[0.06] rounded-lg transition-colors"><X className="w-4 h-4 text-slate-400" /></button>
+            </div>
+
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+              Categories marked <strong>"Skip AI"</strong> won't trigger AI analysis — just upload and store.
+            </p>
+
+            <div className="space-y-2 mb-5">
+              {categoryConfig.map(cat => (
+                <div key={cat.name} className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-slate-50 dark:bg-white/[0.04]">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-semibold text-slate-900 dark:text-white">{cat.name}</span>
+                    {cat.skipAI && <span className="text-[9px] font-bold uppercase tracking-wider text-amber-600 bg-amber-50 dark:bg-amber-500/10 dark:text-amber-400 px-1.5 py-0.5 rounded">No AI</span>}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => toggleSkipAI(cat.name)} className={`relative w-9 h-5 rounded-full transition-colors ${cat.skipAI ? 'bg-amber-500' : 'bg-slate-300 dark:bg-white/10'}`}>
+                      <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${cat.skipAI ? 'left-[18px]' : 'left-0.5'}`} />
+                    </button>
+                    <button onClick={() => removeCategoryConfig(cat.name)} className="p-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-slate-400 hover:text-red-500 transition-colors">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newCatName}
+                onChange={(e) => setNewCatName(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') addCategoryConfig(); }}
+                placeholder="New category name..."
+                className="flex-1 px-3 py-2 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-slate-950 text-sm outline-none focus:border-brand-400"
+              />
+              <button onClick={addCategoryConfig} className="px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 transition-colors">Add</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Share Modal */}
       {showShareModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center px-6">
           <div onClick={() => { setShowShareModal(false); setSharingId(null); }} className="absolute inset-0 bg-slate-900/60" />
-          <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-float overflow-hidden">
+          <div className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl shadow-float overflow-hidden">
             <div className="p-7">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-2.5">
                   <div className="w-9 h-9 bg-brand-600 text-white rounded-lg flex items-center justify-center"><Sparkles className="w-5 h-5" /></div>
-                  <h3 className="text-lg font-bold text-slate-900">AI Achievement Post</h3>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">AI Achievement Post</h3>
                 </div>
-                <button onClick={() => { setShowShareModal(false); setSharingId(null); }} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors"><X className="w-4 h-4 text-slate-400" /></button>
+                <button onClick={() => { setShowShareModal(false); setSharingId(null); }} className="p-1.5 hover:bg-slate-100 dark:hover:bg-white/[0.06] rounded-lg transition-colors"><X className="w-4 h-4 text-slate-400" /></button>
               </div>
-              <div className="bg-slate-50 p-5 rounded-xl border border-slate-100 relative">
-                <p className="text-slate-700 text-sm leading-relaxed whitespace-pre-wrap italic">"{generatedPost}"</p>
-                <button onClick={copyToClipboard} className="absolute top-3 right-3 p-1.5 bg-white rounded-md shadow-sm border border-slate-200 text-slate-400 hover:text-brand-600 transition-colors">
+              <div className="bg-slate-50 dark:bg-white/[0.04] p-5 rounded-xl border border-slate-100 dark:border-white/[0.08] relative">
+                <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed whitespace-pre-wrap italic">"{generatedPost}"</p>
+                <button onClick={copyToClipboard} className="absolute top-3 right-3 p-1.5 bg-white dark:bg-slate-800 rounded-md shadow-sm border border-slate-200 dark:border-white/[0.08] text-slate-400 hover:text-brand-600 transition-colors">
                   {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
                 </button>
               </div>
