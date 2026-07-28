@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --brand-primary: 99 102 241;
+    --brand-secondary: 139 92 246;
+    --app-bg: 248 250 252;
+    --surface: 255 255 255;
+  }
+
+  .dark {
+    --app-bg: 2 6 23;
+    --surface: 15 23 42;
+  }
+
+  body {
+    @apply bg-[rgb(var(--app-bg))] text-slate-900 font-sans antialiased transition-colors duration-500 selection:bg-brand-100 selection:text-brand-900;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(var(--brand-primary), 0.05) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(var(--brand-secondary), 0.05) 0px, transparent 50%);
+    min-height: 100vh;
+  }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .markdown-chat p {
+    margin-bottom: 0.5rem;
+  }
+  .markdown-chat p:last-child {
+    margin-bottom: 0;
+  }
+  .markdown-chat strong {
+    font-weight: 800;
+    color: inherit;
+  }
+  .markdown-chat ul, .markdown-chat ol {
+    margin-bottom: 0.5rem;
+    padding-left: 1.25rem;
+  }
+  .markdown-chat li {
+    margin-bottom: 0.25rem;
+  }
+  .markdown-chat ul {
+    list-style-type: disc;
+  }
+  .markdown-chat ol {
+    list-style-type: decimal;
+  }
+
+  .dark body {
+    @apply text-slate-100;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(var(--brand-primary), 0.15) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(var(--brand-secondary), 0.1) 0px, transparent 50%);
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-soft rounded-3xl transition-all duration-300;
+  }
+
+  .dark .glass-card {
+    @apply bg-slate-900/60 border-white/5 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] shadow-[0_25px_80px_-15px_rgba(99,102,241,0.1)];
+  }
+
+  .btn-primary {
+    @apply px-6 py-3 bg-brand-600 text-white rounded-2xl font-bold transition-all duration-300 flex items-center justify-center gap-2 hover:bg-brand-700 hover:shadow-[0_25px_80px_-15px_rgba(99,102,241,0.1)] hover:-translate-y-0.5 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/25;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 rounded-2xl font-bold border border-slate-200/50 dark:border-white/5 backdrop-blur-md transition-all duration-300 flex items-center justify-center gap-2 hover:bg-white dark:hover:bg-slate-800 hover:shadow-soft hover:-translate-y-0.5 active:scale-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/15;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-[#a5b4fc] text-xs font-bold tracking-wider uppercase border border-brand-100 dark:border-brand-800;
+  }
+
+  .section-title {
+    @apply text-4xl font-black tracking-tight text-slate-950 dark:text-white sm:text-5xl;
+  }
+
+  .chip {
+    @apply px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold border border-slate-200 dark:border-slate-700;
+  }
+
+  .field {
+    @apply w-full rounded-2xl border border-slate-200 bg-white px-4 py-3.5 text-[15px] font-semibold text-slate-950 shadow-sm outline-none transition duration-200 placeholder:text-slate-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500 dark:border-white/10 dark:bg-slate-950/70 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-brand-400 dark:focus:ring-brand-400/15;
+  }
+
+  .field-with-icon {
+    @apply field pl-12;
+  }
+
+  .field-icon {
+    @apply pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 transition;
+  }
+
+  .field-label {
+    @apply mb-2 block text-sm font-black text-slate-700 dark:text-slate-200;
+  }
+
+  .auth-panel {
+    @apply rounded-[1.5rem] border border-slate-900/10 bg-white p-6 shadow-[0_24px_80px_-32px_rgba(15,23,42,0.35)] dark:border-white/10 dark:bg-slate-950/90 sm:p-8;
+  }
+}
+
+.app-shell {
+  @apply max-w-7xl mx-auto px-6 lg:px-12;
+}
+
+.panel {
+  @apply glass-card p-8;
+}
