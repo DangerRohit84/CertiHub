@@ -170,8 +170,9 @@ const Login = () => {
 
 
   return (
-    <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-slate-50 dark:bg-slate-950">
-      <div className="absolute inset-x-0 top-0 h-64 bg-[radial-gradient(circle_at_30%_10%,rgba(20,184,166,0.22),transparent_32%),radial-gradient(circle_at_70%_0%,rgba(99,102,241,0.22),transparent_34%)]" />
+    <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden">
+      <div className="absolute inset-0 hero-grid opacity-30" />
+      <div className="absolute inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_30%_10%,rgba(59,130,246,0.12),transparent_32%),radial-gradient(circle_at_70%_0%,rgba(99,102,241,0.12),transparent_34%)]" />
 
       <div className={`app-shell relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center gap-10 py-10 lg:gap-20 ${isLogin ? 'lg:flex-row' : 'lg:flex-row-reverse'}`}>
         <motion.div 
@@ -247,18 +248,18 @@ const Login = () => {
           animate={{ opacity: 1, y: 0, scale: 1 }}
         >
           <div className="mb-7">
-            <div className="mb-5 inline-flex rounded-2xl border border-slate-200 bg-slate-100 p-1 dark:border-white/10 dark:bg-white/[0.04]">
+            <div className="mb-5 inline-flex rounded-2xl border border-slate-200/60 bg-slate-100/80 p-1 dark:border-white/[0.06] dark:bg-white/[0.04]">
               <button
                 type="button"
                 onClick={() => setIsLogin(true)}
-                className={`rounded-xl px-5 py-2 text-sm font-black transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/20 ${isLogin ? 'bg-white text-slate-950 shadow-sm dark:bg-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'}`}
+                className={`rounded-xl px-5 py-2.5 text-sm font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/20 ${isLogin ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-800 dark:text-white' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'}`}
               >
                 Login
               </button>
               <button
                 type="button"
                 onClick={() => setIsLogin(false)}
-                className={`rounded-xl px-5 py-2 text-sm font-black transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/20 ${!isLogin ? 'bg-white text-slate-950 shadow-sm dark:bg-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'}`}
+                className={`rounded-xl px-5 py-2.5 text-sm font-bold transition-all duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-500/20 ${!isLogin ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-800 dark:text-white' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'}`}
               >
                 Sign up
               </button>
@@ -402,12 +403,12 @@ const Login = () => {
 };
 
 const ValueTile = ({ icon, title, desc }) => (
-  <div className="rounded-2xl border border-slate-900/10 bg-white/70 p-4 backdrop-blur dark:border-white/10 dark:bg-white/[0.04]">
-    <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-slate-950 text-white dark:bg-white dark:text-slate-950">
+  <div className="rounded-2xl border border-slate-200/60 bg-white/70 p-4 backdrop-blur-xl dark:border-white/[0.06] dark:bg-white/[0.04] transition-all duration-300 hover:border-brand-200 dark:hover:border-brand-500/30">
+    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 text-white shadow-md shadow-brand-500/20">
       {icon}
     </div>
-    <h3 className="font-black text-slate-950 dark:text-white">{title}</h3>
-    <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">{desc}</p>
+    <h3 className="font-bold text-slate-900 dark:text-white">{title}</h3>
+    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{desc}</p>
   </div>
 );
 
