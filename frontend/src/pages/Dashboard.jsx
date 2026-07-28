@@ -52,6 +52,8 @@ const Dashboard = () => {
   const [newCatName, setNewCatName] = useState('');
   const [newCatSkipAI, setNewCatSkipAI] = useState(false);
 
+  const [selectedCategory, setSelectedCategory] = useState('All');
+
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [pendingFile, setPendingFile] = useState(null);
   const [uploadCategory, setUploadCategory] = useState('');
@@ -303,8 +305,6 @@ const Dashboard = () => {
     if (activeTab === 'personal') return matchesSearch && matchesCategory && !isVerified;
     return matchesSearch && matchesCategory;
   });
-
-  const [selectedCategory, setSelectedCategory] = useState('All');
 
   if (!user && !fetching) return <div className="py-20 text-center font-medium text-slate-500">Please log in to view your dashboard.</div>;
 
