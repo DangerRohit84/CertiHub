@@ -10,3 +10,10 @@ firebase-service-account.json
 .idea/
 *.suo
 *.sw?
+docs/
+*.pptx
+*.ppt
+.agent/
+server/eng.traineddata
+server/scratch/
+__pycache__/
