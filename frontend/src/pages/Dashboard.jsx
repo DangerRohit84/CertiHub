@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { UploadCloud, FileText, Search, ExternalLink, Trash2, Target, ChevronRight, Share2, Copy, Check, X, Sparkles, CheckCircle2 } from 'lucide-react';
+import { UploadCloud, FileText, Search, ExternalLink, Trash2, Target, ChevronRight, Share2, Copy, Check, X, Sparkles, CheckCircle2, Tag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { auth, db } from '../firebase/firebase';
@@ -24,6 +24,8 @@ const Dashboard = () => {
   const [copied, setCopied] = useState(false);
   const [pendingConsents, setPendingConsents] = useState([]);
   const [activeTab, setActiveTab] = useState('all');
+  const [editingCategoryId, setEditingCategoryId] = useState(null);
+  const [editingCategoryValue, setEditingCategoryValue] = useState('');
   const fileInputRef = useRef(null);
 
   async function fetchCareerStatus(certs) {
@@ -149,6 +151,22 @@ const Dashboard = () => {
   };
 
   const copyToClipboard = () => { navigator.clipboard.writeText(generatedPost); setCopied(true); setTimeout(() => setCopied(false), 2000); };
+
+  const PRESET_CATEGORIES = ['Internship', 'Course', 'Project', 'Achievement', 'Workshop', 'Competition', 'Volunteer', 'Other'];
+
+  const handleUpdateCategory = async (certId, newCategory) => {
+    try {
+      const certRef = doc(db, "certificates", certId);
+      await updateDoc(certRef, { category: newCategory });
+      setCertificates(prev => prev.map(c => c.id === certId ? { ...c, category: newCategory } : c));
+      setEditingCategoryId(null);
+      setEditingCategoryValue('');
+      toast.success("Category updated!");
+    } catch (error) {
+      console.error("Error updating category:", error);
+      toast.error("Failed to update category.");
+    }
+  };
 
   const handleConsent = async (certId, status) => {
     try {
@@ -301,8 +319,49 @@ const Dashboard = () => {
                       <span key={idx} className="chip text-[9px]">{skill}</span>
                     ))}
                   </div>
-                  <div className="flex gap-1.5">
+                  <div className="flex gap-1.5 relative">
                     <Link to={`/certificate/${cert.id}`} className="flex-1 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] py-1.5 text-center text-xs font-medium text-slate-700 transition-colors hover:border-brand-200 hover:text-brand-700 dark:text-slate-300">View</Link>
+                    <div className="relative">
+                      <button
+                        onClick={() => { setEditingCategoryId(editingCategoryId === cert.id ? null : cert.id); setEditingCategoryValue(cert.category || ''); }}
+                        className={`p-1.5 border border-slate-200 dark:border-white/[0.08] rounded-lg transition-colors ${editingCategoryId === cert.id ? 'bg-brand-50 text-brand-600 border-brand-200 dark:bg-brand-500/10 dark:text-brand-400 dark:border-brand-500/30' : 'bg-white dark:bg-white/[0.04] text-slate-400 hover:text-brand-600'}`}
+                        title="Set Category"
+                      >
+                        <Tag className="w-4 h-4" />
+                      </button>
+                      {editingCategoryId === cert.id && (
+                        <div className="absolute bottom-full left-0 mb-2 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/[0.08] rounded-xl shadow-float p-2 z-20">
+                          <div className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 px-2 mb-1.5">Category</div>
+                          <div className="grid grid-cols-2 gap-1 mb-2">
+                            {PRESET_CATEGORIES.map(cat => (
+                              <button
+                                key={cat}
+                                onClick={() => handleUpdateCategory(cert.id, cat)}
+                                className={`px-2 py-1.5 rounded-lg text-[11px] font-medium text-left transition-colors ${(cert.category || 'Other') === cat ? 'bg-brand-600 text-white' : 'bg-slate-50 dark:bg-white/[0.04] text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.08]'}`}
+                              >
+                                {cat}
+                              </button>
+                            ))}
+                          </div>
+                          <div className="flex gap-1.5">
+                            <input
+                              type="text"
+                              value={editingCategoryValue}
+                              onChange={(e) => setEditingCategoryValue(e.target.value)}
+                              onKeyDown={(e) => { if (e.key === 'Enter' && editingCategoryValue.trim()) handleUpdateCategory(cert.id, editingCategoryValue.trim()); }}
+                              placeholder="Custom..."
+                              className="flex-1 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-slate-950 text-xs outline-none focus:border-brand-400"
+                            />
+                            <button
+                              onClick={() => { if (editingCategoryValue.trim()) handleUpdateCategory(cert.id, editingCategoryValue.trim()); }}
+                              className="px-2 py-1.5 rounded-lg bg-brand-600 text-white text-xs font-medium hover:bg-brand-700 transition-colors"
+                            >
+                              Set
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                     <button onClick={() => handleShareOnLinkedIn(cert)} disabled={sharingId === cert.id} className="p-1.5 bg-white dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.08] rounded-lg text-slate-400 hover:text-brand-600 transition-colors" title="AI Social Post">
                       {sharingId === cert.id ? <div className="w-4 h-4 border-2 border-brand-600 border-t-transparent rounded-full animate-spin" /> : <Share2 className="w-4 h-4" />}
                     </button>
