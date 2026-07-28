@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { 
   Users, 
   FileText, 
@@ -17,6 +18,9 @@ import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import { auth } from '../firebase/firebase';
 import '../styles/print.css';
+
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.06 } } };
+const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] } } };
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
@@ -95,40 +99,48 @@ const AdminDashboard = () => {
           </div>
         </header>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard 
-            icon={<Users className="h-6 w-6" />}
-            label="Total Ecosystem Users"
-            value={stats?.totalUsers || 0}
-            trend="+12.4%"
-            color="indigo"
-            chartData={[30, 45, 35, 60, 55, 80]}
-          />
-          <StatCard 
-            icon={<FileText className="h-6 w-6" />}
-            label="Verified Certificates"
-            value={stats?.totalCertificates || 0}
-            trend="+8.2%"
-            color="brand"
-            chartData={[20, 30, 45, 40, 65, 75]}
-          />
-          <StatCard 
-            icon={<CheckCircle className="h-6 w-6" />}
-            label="AI Verification Rate"
-            value="99.4%"
-            trend="Stable"
-            color="teal"
-            chartData={[98, 99, 99.2, 99.4, 99.3, 99.4]}
-          />
-          <StatCard 
-            icon={<TrendingUp className="h-6 w-6" />}
-            label="Skill Extractions"
-            value={(stats?.totalCertificates || 0) * 8}
-            trend="+18%"
-            color="amber"
-            chartData={[40, 50, 45, 70, 85, 95]}
-          />
-        </div>
+        <motion.div variants={stagger} initial="hidden" animate="visible" className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <motion.div variants={fadeUp}>
+            <StatCard 
+              icon={<Users className="h-6 w-6" />}
+              label="Total Ecosystem Users"
+              value={stats?.totalUsers || 0}
+              trend="+12.4%"
+              color="indigo"
+              chartData={[30, 45, 35, 60, 55, 80]}
+            />
+          </motion.div>
+          <motion.div variants={fadeUp}>
+            <StatCard 
+              icon={<FileText className="h-6 w-6" />}
+              label="Verified Certificates"
+              value={stats?.totalCertificates || 0}
+              trend="+8.2%"
+              color="brand"
+              chartData={[20, 30, 45, 40, 65, 75]}
+            />
+          </motion.div>
+          <motion.div variants={fadeUp}>
+            <StatCard 
+              icon={<CheckCircle className="h-6 w-6" />}
+              label="AI Verification Rate"
+              value="99.4%"
+              trend="Stable"
+              color="teal"
+              chartData={[98, 99, 99.2, 99.4, 99.3, 99.4]}
+            />
+          </motion.div>
+          <motion.div variants={fadeUp}>
+            <StatCard 
+              icon={<TrendingUp className="h-6 w-6" />}
+              label="Skill Extractions"
+              value={(stats?.totalCertificates || 0) * 8}
+              trend="+18%"
+              color="amber"
+              chartData={[40, 50, 45, 70, 85, 95]}
+            />
+          </motion.div>
+        </motion.div>
 
         <div className="mt-12 grid gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2">

@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { auth, db } from '../firebase/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { Briefcase, Target, TrendingUp, Compass, Sparkles, BookOpen, ExternalLink, CheckCircle2, XCircle } from 'lucide-react';
 import axios from 'axios';
+
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
+const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } } };
 
 const CareerAdvisor = () => {
   const [certificates, setCertificates] = useState([]);
@@ -98,8 +102,8 @@ const CareerAdvisor = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12">
+    <motion.div className="max-w-7xl mx-auto px-6 py-10" variants={stagger} initial="hidden" animate="visible">
+      <motion.div variants={fadeUp} className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12">
         <div>
           <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
             <Sparkles className="w-8 h-8 text-brand-600" />
@@ -107,10 +111,10 @@ const CareerAdvisor = () => {
           </h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1 font-medium">See what you are good at and where you can grow.</p>
         </div>
-      </div>
+      </motion.div>
 
       {advice && (
-        <div className="space-y-12">
+        <motion.div variants={fadeUp} className="space-y-12">
           <div className="bg-slate-900 rounded-[2.5rem] p-12 text-white relative overflow-hidden shadow-[0_40px_100px_-20px_rgba(15,23,42,0.6)]">
             <div className="absolute top-0 right-0 p-10 opacity-10">
               <Compass className="w-80 h-80 rotate-12" />
@@ -311,9 +315,9 @@ const CareerAdvisor = () => {
               ))}
             </div>
           </div>
-        </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

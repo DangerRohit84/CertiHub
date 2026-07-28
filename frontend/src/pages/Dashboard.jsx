@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { UploadCloud, FileText, Search, ExternalLink, Trash2, Target, ChevronRight, Share2, Copy, Check, X, Sparkles, CheckCircle2, Tag, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { motion, AnimatePresence } from 'framer-motion';
 import { auth, db } from '../firebase/firebase';
 import { collection, query, where, getDocs, addDoc, serverTimestamp, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -21,6 +22,11 @@ const DEFAULT_CATEGORIES = [
   { name: 'Participation', skipAI: true },
   { name: 'Other', skipAI: false },
 ];
+
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.06 } } };
+const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] } } };
+const modalOverlay = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.2 } }, exit: { opacity: 0, transition: { duration: 0.15 } } };
+const modalContent = { hidden: { opacity: 0, scale: 0.95, y: 8 }, visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] } }, exit: { opacity: 0, scale: 0.95, y: 8, transition: { duration: 0.15 } } };
 
 const loadCategoryConfig = () => {
   try {
@@ -421,9 +427,9 @@ const Dashboard = () => {
             <p className="text-sm text-slate-500 font-medium">No certificates match your filters.</p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <motion.div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4" variants={stagger} initial="hidden" animate="visible">
             {filteredCerts.map((cert) => (
-              <div key={cert.id} className="card flex overflow-hidden flex-col hover:shadow-card-hover">
+              <motion.div key={cert.id} variants={fadeUp} className="card flex overflow-hidden flex-col hover:shadow-card-hover">
                 <div className="h-36 bg-slate-100 overflow-hidden relative border-b border-slate-200/60">
                   <img src={cert.cloudinaryUrl?.replace(/\.pdf$/i, '.jpg')} alt={cert.title} className="w-full h-full object-cover" onError={(e) => { e.target.src = 'https://placehold.co/400x200/e2e8f0/475569?text=PDF' }} />
                 </div>
@@ -500,20 +506,21 @@ const Dashboard = () => {
                     <button onClick={() => handleShareOnLinkedIn(cert)} disabled={sharingId === cert.id} className="p-1.5 bg-white dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.08] rounded-lg text-slate-400 hover:text-brand-600 transition-colors" title="AI Social Post">
                       {sharingId === cert.id ? <div className="w-4 h-4 border-2 border-brand-600 border-t-transparent rounded-full animate-spin" /> : <Share2 className="w-4 h-4" />}
                     </button>
-                    <button onClick={() => handleDelete(cert.id)} className="p-1.5 bg-white dark:bg-white/[0.04] hover:bg-red-50 dark:hover:bg-red-500/10 border border-slate-200 dark:border-white/[0.08] hover:border-red-200 rounded-lg text-slate-400 hover:text-red-500 transition-colors" title="Delete"><Trash2 className="w-4 h-4" /></button>
+                    <button onClick={() => handleDelete(cert.id)} className="p-1.5 bg-white dark:bg-white/[0.04] hover:bg-red-50 dark:hover:bg-red-500/10 border border-slate-200 dark:border-white/[0.08] hover:border-red-200 rounded-lg text-slate-400 hover:text-red-500 transition-colors" title="Delete"><Trash2 className="w-4 h-4" />                    </button>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
 
       {/* Upload Category Modal */}
+      <AnimatePresence>
       {showUploadModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center px-6">
+        <motion.div className="fixed inset-0 z-[100] flex items-center justify-center px-6" variants={modalOverlay} initial="hidden" animate="visible" exit="exit">
           <div onClick={() => { setShowUploadModal(false); setPendingFile(null); }} className="absolute inset-0 bg-slate-900/60" />
-          <div className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-float p-6">
+          <motion.div variants={modalContent} initial="hidden" animate="visible" exit="exit" className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-float p-6">
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 bg-brand-600 text-white rounded-lg flex items-center justify-center"><UploadCloud className="w-5 h-5" /></div>
@@ -569,15 +576,17 @@ const Dashboard = () => {
             >
               {loading ? 'Processing...' : 'Upload Certificate'}
             </button>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
+      </AnimatePresence>
 
       {/* Category Settings Modal */}
+      <AnimatePresence>
       {showCategorySettings && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center px-6">
+        <motion.div className="fixed inset-0 z-[100] flex items-center justify-center px-6" variants={modalOverlay} initial="hidden" animate="visible" exit="exit">
           <div onClick={() => setShowCategorySettings(false)} className="absolute inset-0 bg-slate-900/60" />
-          <div className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-float p-6 max-h-[80vh] overflow-y-auto">
+          <motion.div variants={modalContent} initial="hidden" animate="visible" exit="exit" className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-float p-6 max-h-[80vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 bg-brand-600 text-white rounded-lg flex items-center justify-center"><Settings className="w-5 h-5" /></div>
@@ -620,15 +629,17 @@ const Dashboard = () => {
               />
               <button onClick={addCategoryConfig} className="px-4 py-2 rounded-lg bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 transition-colors">Add</button>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
+      </AnimatePresence>
 
       {/* Share Modal */}
+      <AnimatePresence>
       {showShareModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center px-6">
+        <motion.div className="fixed inset-0 z-[100] flex items-center justify-center px-6" variants={modalOverlay} initial="hidden" animate="visible" exit="exit">
           <div onClick={() => { setShowShareModal(false); setSharingId(null); }} className="absolute inset-0 bg-slate-900/60" />
-          <div className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl shadow-float overflow-hidden">
+          <motion.div variants={modalContent} initial="hidden" animate="visible" exit="exit" className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl shadow-float overflow-hidden">
             <div className="p-7">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-2.5">
@@ -649,9 +660,10 @@ const Dashboard = () => {
                 </button>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
+      </AnimatePresence>
 
       <ForcedUsernameModal dbUser={dbUser} user={user} onUsernameSet={(newUsername) => setDbUser({ ...dbUser, username: newUsername })} />
     </div>

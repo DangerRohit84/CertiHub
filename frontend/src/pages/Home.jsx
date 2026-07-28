@@ -1,9 +1,14 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   ArrowRight, BadgeCheck, BarChart3, BookOpenCheck, BrainCircuit, FileCheck2,
   FileSearch, Globe2, GraduationCap, LockKeyhole, MousePointer2, ScanLine,
   ShieldCheck, Sparkles, Target, TrendingUp, UploadCloud, Zap, Users, Award,
 } from 'lucide-react';
+
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.1 } } };
+const fadeUp = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } } };
+const scaleIn = { hidden: { opacity: 0, scale: 0.95 }, visible: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } } };
 
 const Home = () => {
   return (
@@ -16,23 +21,23 @@ const Home = () => {
 
         <div className="app-shell relative z-10 py-28 lg:py-36">
           <div className="grid gap-14 lg:grid-cols-[1fr_1.1fr] lg:items-center">
-            <div>
-              <div className="eyebrow mb-5">
+            <motion.div variants={stagger} initial="hidden" animate="visible">
+              <motion.div variants={fadeUp} className="eyebrow mb-5">
                 <Sparkles className="h-3.5 w-3.5" />
                 AI-Powered Credential Intelligence
-              </div>
-              <h1 className="text-4xl font-bold tracking-tight text-slate-950 dark:text-white sm:text-5xl lg:text-6xl">
+              </motion.div>
+              <motion.h1 variants={fadeUp} className="text-4xl font-bold tracking-tight text-slate-950 dark:text-white sm:text-5xl lg:text-6xl">
                 Turn certificates into{' '}
                 <span className="relative">
                   <span className="relative z-10 bg-gradient-to-r from-brand-600 to-accent-violet bg-clip-text text-transparent">proof</span>
                   <span className="absolute bottom-0.5 left-0 right-0 h-2 bg-brand-200/50 dark:bg-brand-500/20 -rotate-1 rounded-full" />
                 </span>{' '}
                 people can trust.
-              </h1>
-              <p className="mt-6 max-w-xl text-base leading-relaxed text-slate-600 dark:text-slate-400 sm:text-lg">
+              </motion.h1>
+              <motion.p variants={fadeUp} className="mt-6 max-w-xl text-base leading-relaxed text-slate-600 dark:text-slate-400 sm:text-lg">
                 CertiHub transforms certificate PDFs and images into a verified skills portfolio with AI extraction, career readiness insights, and a clean public profile.
-              </p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              </motion.p>
+              <motion.div variants={fadeUp} className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link to="/login" className="btn-primary px-7 py-3 text-sm">
                   Build your portfolio <ArrowRight className="h-4 w-4" />
                 </Link>
@@ -51,8 +56,8 @@ const Home = () => {
                     <ScanLine className="h-4 w-4" />
                   </div>
                 </div>
-              </div>
-              <div className="mt-10 flex items-center gap-6">
+              </motion.div>
+              <motion.div variants={fadeUp} className="mt-10 flex items-center gap-6">
                 <div className="flex items-center gap-2.5">
                   <div className="flex -space-x-1.5">
                     {['bg-brand-500', 'bg-accent-emerald', 'bg-accent-violet', 'bg-accent-amber'].map((c, i) => (
@@ -71,11 +76,11 @@ const Home = () => {
                   <div className="text-xs font-bold text-slate-900 dark:text-white">99.4%</div>
                   <div className="text-[10px] text-slate-500 dark:text-slate-400">AI accuracy</div>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
             {/* Mock UI */}
-            <div className="relative">
+            <motion.div variants={scaleIn} initial="hidden" animate="visible" className="relative">
               <div className="rounded-2xl border border-slate-200/60 bg-white p-2.5 shadow-float dark:border-white/[0.08] dark:bg-slate-900">
                 <div className="overflow-hidden rounded-xl bg-slate-950 text-white">
                   <div className="flex items-center gap-1.5 border-b border-white/10 px-4 py-2.5">
@@ -152,7 +157,7 @@ const Home = () => {
                   <p className="text-[10px] text-slate-500 dark:text-slate-400">Instant extraction</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -182,29 +187,29 @@ const Home = () => {
       {/* Features */}
       <section id="features" className="py-20 lg:py-28">
         <div className="app-shell">
-          <div className="mb-14 max-w-2xl">
-            <div className="eyebrow mb-4">How it works</div>
-            <h2 className="section-title">From upload to verified proof in seconds.</h2>
-            <p className="mt-4 text-base text-slate-600 dark:text-slate-400">
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="mb-14 max-w-2xl">
+            <motion.div variants={fadeUp} className="eyebrow mb-4">How it works</motion.div>
+            <motion.h2 variants={fadeUp} className="section-title">From upload to verified proof in seconds.</motion.h2>
+            <motion.p variants={fadeUp} className="mt-4 text-base text-slate-600 dark:text-slate-400">
               Our AI engine reads your certificates, extracts verified data, and builds a professional profile you can share anywhere.
-            </p>
-          </div>
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            </motion.p>
+          </motion.div>
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             {[
               { icon: <UploadCloud className="h-6 w-6" />, title: 'Upload', desc: 'Add certificate PDFs or images from courses, internships, and achievements.', color: 'from-brand-500 to-brand-600' },
               { icon: <FileSearch className="h-6 w-6" />, title: 'Extract', desc: 'AI reads title, issuer, dates, names, and skills with 99%+ accuracy.', color: 'from-accent-emerald to-emerald-600' },
               { icon: <BrainCircuit className="h-6 w-6" />, title: 'Understand', desc: 'Generate summaries, role suggestions, and career readiness insights.', color: 'from-accent-violet to-violet-600' },
               { icon: <Globe2 className="h-6 w-6" />, title: 'Share', desc: 'Publish a clean portfolio URL for recruiters and mentors to scan.', color: 'from-accent-amber to-amber-600' },
             ].map((f, i) => (
-              <article key={i} className="group card p-6 cursor-pointer hover:shadow-card-hover">
+              <motion.article key={i} variants={fadeUp} className="group card p-6 cursor-pointer hover:shadow-card-hover">
                 <div className={`mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${f.color} text-white shadow-sm transition-transform duration-200 group-hover:scale-105`}>
                   {f.icon}
                 </div>
                 <h3 className="mb-2 text-base font-bold text-slate-900 dark:text-white">{f.title}</h3>
                 <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">{f.desc}</p>
-              </article>
+              </motion.article>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -212,15 +217,15 @@ const Home = () => {
       <section className="py-20 lg:py-28 bg-white dark:bg-slate-950">
         <div className="app-shell">
           <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-            <div>
-              <div className="eyebrow mb-4">Dashboard</div>
-              <h2 className="text-3xl font-bold tracking-tight text-slate-950 dark:text-white sm:text-4xl">
+            <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }}>
+              <motion.div variants={fadeUp} className="eyebrow mb-4">Dashboard</motion.div>
+              <motion.h2 variants={fadeUp} className="text-3xl font-bold tracking-tight text-slate-950 dark:text-white sm:text-4xl">
                 A dashboard that explains achievement, not just stores uploads.
-              </h2>
-              <p className="mt-5 text-base leading-relaxed text-slate-600 dark:text-slate-400">
+              </motion.h2>
+              <motion.p variants={fadeUp} className="mt-5 text-base leading-relaxed text-slate-600 dark:text-slate-400">
                 Every certificate becomes a structured record with skill tags, AI summaries, portfolio score, and role guidance.
-              </p>
-              <div className="mt-7 grid grid-cols-2 gap-3">
+              </motion.p>
+              <motion.div variants={fadeUp} className="mt-7 grid grid-cols-2 gap-3">
                 <div className="card p-4">
                   <div className="mb-2.5 flex h-9 w-9 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400">
                     <ScanLine className="h-4 w-4" />
@@ -235,9 +240,9 @@ const Home = () => {
                   <h4 className="text-sm font-semibold text-slate-900 dark:text-white">Measure readiness</h4>
                   <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">See how your portfolio aligns with goals.</p>
                 </div>
-              </div>
-            </div>
-            <div>
+              </motion.div>
+            </motion.div>
+            <motion.div variants={scaleIn} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }}>
               <div className="rounded-2xl border border-slate-200/60 bg-white p-2.5 shadow-float dark:border-white/[0.08] dark:bg-slate-900">
                 <div className="overflow-hidden rounded-xl bg-slate-50 p-5 dark:bg-slate-950">
                   <div className="flex items-center justify-between mb-5">
@@ -259,7 +264,7 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -267,32 +272,32 @@ const Home = () => {
       {/* Who It's For */}
       <section className="py-20 lg:py-28">
         <div className="app-shell">
-          <div className="text-center mb-14">
-            <div className="eyebrow mb-4 mx-auto w-fit">Built for everyone</div>
-            <h2 className="section-title">One platform, every career stage.</h2>
-          </div>
-          <div className="grid gap-5 md:grid-cols-3">
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="text-center mb-14">
+            <motion.div variants={fadeUp} className="eyebrow mb-4 mx-auto w-fit">Built for everyone</motion.div>
+            <motion.h2 variants={fadeUp} className="section-title">One platform, every career stage.</motion.h2>
+          </motion.div>
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="grid gap-5 md:grid-cols-3">
             {[
               { icon: <GraduationCap className="h-5 w-5" />, title: 'For students', desc: 'Show learning outcomes with organized certificate proof and clear skill highlights.', gradient: 'from-brand-500 to-brand-600' },
               { icon: <TrendingUp className="h-5 w-5" />, title: 'For job seekers', desc: 'Turn certificates into a recruiter-friendly profile with summaries and role fit.', gradient: 'from-accent-emerald to-emerald-600' },
               { icon: <BookOpenCheck className="h-5 w-5" />, title: 'For upskilling', desc: 'Find what to learn next based on your current certificate portfolio.', gradient: 'from-accent-violet to-violet-600' },
             ].map((item, i) => (
-              <div key={i} className="card p-6 group cursor-pointer hover:shadow-card-hover">
+              <motion.div key={i} variants={fadeUp} className="card p-6 group cursor-pointer hover:shadow-card-hover">
                 <div className={`mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${item.gradient} text-white shadow-sm transition-transform duration-200 group-hover:scale-105`}>
                   {item.icon}
                 </div>
                 <h3 className="mb-2 text-base font-bold text-slate-900 dark:text-white">{item.title}</h3>
                 <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">{item.desc}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* CTA */}
       <section className="py-20 lg:py-28">
         <div className="app-shell">
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-brand-950 p-8 sm:p-14 text-white">
+          <motion.div variants={scaleIn} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-brand-950 p-8 sm:p-14 text-white">
             <div className="absolute inset-0 hero-grid opacity-15" />
             <div className="absolute top-0 right-0 w-[400px] h-[400px] rounded-full bg-brand-500/15 blur-[100px]" />
             <div className="relative z-10 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
@@ -311,7 +316,7 @@ const Home = () => {
                 Start now <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
     </div>

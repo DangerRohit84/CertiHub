@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import logo from '../assets/logo.png';
 import { useParams, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import { ShieldCheck, ExternalLink, Download, BarChart3, Users, Award, TrendingUp, PieChart, Activity } from 'lucide-react';
+
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.06 } } };
+const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] } } };
 
 const Portfolio = () => {
   const { username } = useParams();
@@ -241,10 +245,11 @@ const Portfolio = () => {
             <p className="text-slate-500 text-lg">This user hasn't added any public certificates yet.</p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <motion.div variants={stagger} initial="hidden" animate="visible" className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {certificates.map((cert) => (
-              <div 
+              <motion.div 
                 key={cert.id}
+                variants={fadeUp}
                 className="card overflow-hidden flex flex-col hover:shadow-xl transition-shadow duration-300"
               >
                 <div className="h-48 bg-slate-100 overflow-hidden relative border-b border-slate-200 group">
@@ -300,9 +305,9 @@ const Portfolio = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )
       )}
     </div>

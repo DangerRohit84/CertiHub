@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { auth, googleProvider, db } from '../firebase/firebase';
 import {
   signInWithRedirect, getRedirectResult, signInWithEmailAndPassword,
@@ -7,6 +8,9 @@ import {
 } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, ShieldCheck, Sparkles, UserRound } from 'lucide-react';
+
+const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } } };
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -124,34 +128,34 @@ const Login = () => {
         {/* Left side - value prop */}
         <div className="hidden lg:block lg:w-1/2">
           {isLogin ? (
-            <div key="login-left">
-              <div className="eyebrow mb-5"><ShieldCheck className="h-3.5 w-3.5" /> Welcome back</div>
-              <h1 className="max-w-lg text-5xl font-bold tracking-tight text-slate-950 dark:text-white">Continue building your career.</h1>
-              <p className="mt-5 max-w-md text-base leading-relaxed text-slate-600 dark:text-slate-400">Sign in to manage your certificates, update your skills, and check your latest career roadmap updates.</p>
-              <div className="mt-8 grid max-w-md grid-cols-2 gap-3">
+            <motion.div key="login-left" variants={stagger} initial="hidden" animate="visible">
+              <motion.div variants={fadeUp} className="eyebrow mb-5"><ShieldCheck className="h-3.5 w-3.5" /> Welcome back</motion.div>
+              <motion.h1 variants={fadeUp} className="max-w-lg text-5xl font-bold tracking-tight text-slate-950 dark:text-white">Continue building your career.</motion.h1>
+              <motion.p variants={fadeUp} className="mt-5 max-w-md text-base leading-relaxed text-slate-600 dark:text-slate-400">Sign in to manage your certificates, update your skills, and check your latest career roadmap updates.</motion.p>
+              <motion.div variants={fadeUp} className="mt-8 grid max-w-md grid-cols-2 gap-3">
                 <ValueTile icon={<Sparkles className="h-4 w-4" />} title="Quick Scan" desc="Update your skills fast." />
                 <ValueTile icon={<ShieldCheck className="h-4 w-4" />} title="Secure Storage" desc="Your data stays yours." />
                 <ValueTile icon={<LockKeyhole className="h-4 w-4" />} title="Private Links" desc="You control who sees." />
                 <ValueTile icon={<Mail className="h-4 w-4" />} title="Updated Profile" desc="Share your latest wins." />
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           ) : (
-            <div key="signup-left">
-              <div className="eyebrow mb-5"><Sparkles className="h-3.5 w-3.5" /> Join CertiHub</div>
-              <h1 className="max-w-lg text-5xl font-bold tracking-tight text-slate-950 dark:text-white">Show the world what you know.</h1>
-              <p className="mt-5 max-w-md text-base leading-relaxed text-slate-600 dark:text-slate-400">Create an account to turn your certificates into a professional profile that actually helps you get hired.</p>
-              <div className="mt-8 grid max-w-md grid-cols-2 gap-3">
+            <motion.div key="signup-left" variants={stagger} initial="hidden" animate="visible">
+              <motion.div variants={fadeUp} className="eyebrow mb-5"><Sparkles className="h-3.5 w-3.5" /> Join CertiHub</motion.div>
+              <motion.h1 variants={fadeUp} className="max-w-lg text-5xl font-bold tracking-tight text-slate-950 dark:text-white">Show the world what you know.</motion.h1>
+              <motion.p variants={fadeUp} className="mt-5 max-w-md text-base leading-relaxed text-slate-600 dark:text-slate-400">Create an account to turn your certificates into a professional profile that actually helps you get hired.</motion.p>
+              <motion.div variants={fadeUp} className="mt-8 grid max-w-md grid-cols-2 gap-3">
                 <ValueTile icon={<UserRound className="h-4 w-4" />} title="Free Profile" desc="No cost to get started." />
                 <ValueTile icon={<ShieldCheck className="h-4 w-4" />} title="AI Analysis" desc="Understand your gaps." />
                 <ValueTile icon={<Sparkles className="h-4 w-4" />} title="Smart Roadmap" desc="Plan your next step." />
                 <ValueTile icon={<Mail className="h-4 w-4" />} title="Personal URL" desc="certihub.com/you" />
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           )}
         </div>
 
         {/* Auth panel */}
-        <div className="mx-auto w-full max-w-[440px] lg:w-1/2">
+        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }} className="mx-auto w-full max-w-[440px] lg:w-1/2">
           <div className="rounded-2xl border border-slate-200/60 bg-white p-7 shadow-card dark:border-white/[0.08] dark:bg-slate-950/90 sm:p-8">
             <div className="mb-6">
               <div className="mb-4 inline-flex rounded-lg border border-slate-200/60 bg-slate-100/80 p-0.5 dark:border-white/[0.06] dark:bg-white/[0.04]">
@@ -241,7 +245,7 @@ const Login = () => {
               Continue with Google
             </button>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

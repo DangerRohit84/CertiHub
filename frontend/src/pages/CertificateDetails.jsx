@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '../firebase/firebase';
 import { ArrowLeft, CheckCircle, Download, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
+
+const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } } };
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
 
 const CertificateDetails = () => {
   const { id } = useParams();
@@ -131,8 +135,8 @@ const CertificateDetails = () => {
   if (!cert) return <div className="text-center py-20 text-red-500">Certificate not found.</div>;
 
   return (
-    <div className="app-shell max-w-6xl py-10">
-      <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <motion.div className="app-shell max-w-6xl py-10" variants={stagger} initial="hidden" animate="visible">
+      <motion.div variants={fadeUp} className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <button 
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 font-bold text-slate-500 transition hover:text-brand-700 dark:text-slate-400 dark:hover:text-brand-400"
@@ -151,9 +155,9 @@ const CertificateDetails = () => {
             <Download className="w-4 h-4" /> Download Certificate
           </a>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="grid lg:grid-cols-5 gap-10">
+      <motion.div variants={fadeUp} className="grid lg:grid-cols-5 gap-10">
         
         <div className="lg:col-span-2 space-y-6">
           <div className="card overflow-hidden p-2">
@@ -282,8 +286,8 @@ const CertificateDetails = () => {
             )}
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
