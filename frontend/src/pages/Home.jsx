@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
@@ -23,48 +22,24 @@ import {
   Award,
 } from 'lucide-react';
 
-const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
-};
-
-const stagger = {
-  animate: { transition: { staggerChildren: 0.1 } }
-};
-
 const Home = () => {
   return (
     <div className="overflow-hidden">
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center">
-        {/* Background Effects */}
-        <div className="absolute inset-0 hero-grid opacity-40" />
+        <div className="absolute inset-0 hero-grid opacity-30" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[rgb(var(--app-bg))]" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-radial from-brand-400/15 via-brand-500/5 to-transparent rounded-full blur-3xl" />
-        <div className="absolute top-20 right-0 w-[400px] h-[400px] bg-gradient-radial from-accent-emerald/10 via-accent-emerald/5 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-radial from-accent-violet/8 via-transparent to-transparent rounded-full blur-3xl" />
 
         <div className="app-shell relative z-10 py-32 lg:py-40">
           <div className="grid gap-16 lg:grid-cols-[1fr_1.1fr] lg:items-center">
-            {/* Left Content */}
-            <motion.div {...fadeInUp}>
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.1, duration: 0.5 }}
-                className="eyebrow mb-6"
-              >
+            <div>
+              <div className="eyebrow mb-6">
                 <Sparkles className="h-3.5 w-3.5" />
                 AI-Powered Credential Intelligence
-              </motion.div>
+              </div>
               
-              <motion.h1 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                className="text-5xl font-black tracking-tight text-slate-950 dark:text-white sm:text-6xl lg:text-7xl"
-              >
+              <h1 className="text-5xl font-black tracking-tight text-slate-950 dark:text-white sm:text-6xl lg:text-7xl">
                 Turn certificates into{' '}
                 <span className="relative">
                   <span className="relative z-10 bg-gradient-to-r from-brand-600 via-brand-500 to-accent-violet bg-clip-text text-transparent">
@@ -73,23 +48,13 @@ const Home = () => {
                   <span className="absolute bottom-1 left-0 right-0 h-3 bg-brand-200/50 dark:bg-brand-500/20 -rotate-1 rounded-full" />
                 </span>{' '}
                 people can trust.
-              </motion.h1>
+              </h1>
               
-              <motion.p 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.35, duration: 0.6 }}
-                className="mt-7 max-w-2xl text-lg leading-relaxed text-slate-600 dark:text-slate-400 sm:text-xl"
-              >
+              <p className="mt-7 max-w-2xl text-lg leading-relaxed text-slate-600 dark:text-slate-400 sm:text-xl">
                 CertiHub transforms certificate PDFs and images into a verified skills portfolio with AI extraction, career readiness insights, and a clean public profile.
-              </motion.p>
+              </p>
 
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.45, duration: 0.6 }}
-                className="mt-10 flex flex-col gap-4 sm:flex-row"
-              >
+              <div className="mt-10 flex flex-col gap-4 sm:flex-row">
                 <Link to="/login" className="btn-primary px-8 py-4 text-base">
                   Build your portfolio
                   <ArrowRight className="h-5 w-5" />
@@ -109,14 +74,9 @@ const Home = () => {
                     <ScanLine className="h-5 w-5" />
                   </div>
                 </div>
-              </motion.div>
+              </div>
 
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.6, duration: 0.6 }}
-                className="mt-14 flex items-center gap-8"
-              >
+              <div className="mt-14 flex items-center gap-8">
                 <div className="flex items-center gap-3">
                   <div className="flex -space-x-2">
                     {['bg-brand-500', 'bg-accent-emerald', 'bg-accent-violet', 'bg-accent-amber'].map((color, i) => (
@@ -135,19 +95,13 @@ const Home = () => {
                   <div className="text-sm font-bold text-slate-900 dark:text-white">99.4%</div>
                   <div className="text-xs text-slate-500 dark:text-slate-400">AI accuracy</div>
                 </div>
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
 
             {/* Right Visual */}
-            <motion.div
-              initial={{ opacity: 0, x: 40, scale: 0.95 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="relative"
-            >
+            <div className="relative">
               <div className="relative rounded-[2rem] border border-slate-200/60 bg-white p-3 shadow-heavy dark:border-white/[0.08] dark:bg-slate-900">
                 <div className="overflow-hidden rounded-[1.5rem] bg-slate-950 text-white">
-                  {/* Browser Chrome */}
                   <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3">
                     <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
                     <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
@@ -156,7 +110,6 @@ const Home = () => {
                   </div>
 
                   <div className="p-6">
-                    {/* Header */}
                     <div className="flex items-center justify-between mb-6">
                       <div>
                         <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-400">Live Credential Profile</p>
@@ -169,7 +122,6 @@ const Home = () => {
                     </div>
 
                     <div className="grid gap-0 lg:grid-cols-[1fr_1fr]">
-                      {/* Certificate Card */}
                       <div className="border-b border-white/10 p-5 lg:border-b-0 lg:border-r lg:border-white/10">
                         <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
                           <div className="mb-4 flex items-center justify-between">
@@ -189,7 +141,6 @@ const Home = () => {
                         </div>
                       </div>
 
-                      {/* Status Panel */}
                       <div className="p-5 space-y-3">
                         <Signal icon={<ScanLine className="h-4 w-4" />} title="OCR extraction" value="Completed" tone="text-brand-300" />
                         <Signal icon={<BadgeCheck className="h-4 w-4" />} title="Skill proof" value="Verified" tone="text-emerald-300" />
@@ -201,12 +152,7 @@ const Home = () => {
                             <p className="text-sm font-black text-emerald-300">86%</p>
                           </div>
                           <div className="h-2 overflow-hidden rounded-full bg-white/10">
-                            <motion.div 
-                              initial={{ width: 0 }}
-                              animate={{ width: '86%' }}
-                              transition={{ delay: 1, duration: 1.5, ease: 'easeOut' }}
-                              className="h-full rounded-full bg-gradient-to-r from-emerald-400 via-brand-400 to-accent-violet" 
-                            />
+                            <div className="h-full w-[86%] rounded-full bg-gradient-to-r from-emerald-400 via-brand-400 to-accent-violet" />
                           </div>
                           <p className="mt-3 text-xs leading-relaxed text-slate-400">
                             Add one cloud certificate to strengthen deployment readiness.
@@ -219,11 +165,7 @@ const Home = () => {
               </div>
 
               {/* Floating Elements */}
-              <motion.div 
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute -bottom-4 left-4 hidden rounded-xl border border-slate-200/60 bg-white px-4 py-3 shadow-medium dark:border-white/[0.08] dark:bg-slate-900 sm:flex items-center gap-3"
-              >
+              <div className="absolute -bottom-4 left-4 hidden rounded-xl border border-slate-200/60 bg-white px-4 py-3 shadow-medium dark:border-white/[0.08] dark:bg-slate-900 sm:flex items-center gap-3 animate-float-gentle">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-100 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400">
                   <MousePointer2 className="h-5 w-5" />
                 </div>
@@ -231,13 +173,9 @@ const Home = () => {
                   <p className="text-sm font-bold text-slate-900 dark:text-white">One-link portfolio</p>
                   <p className="text-xs text-slate-500 dark:text-slate-400">Ready for recruiters</p>
                 </div>
-              </motion.div>
+              </div>
 
-              <motion.div 
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-                className="absolute -top-4 right-4 hidden rounded-xl border border-slate-200/60 bg-white px-4 py-3 shadow-medium dark:border-white/[0.08] dark:bg-slate-900 sm:flex items-center gap-3"
-              >
+              <div className="absolute -top-4 right-4 hidden rounded-xl border border-slate-200/60 bg-white px-4 py-3 shadow-medium dark:border-white/[0.08] dark:bg-slate-900 sm:flex items-center gap-3 animate-float-gentle" style={{ animationDelay: '1s' }}>
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400">
                   <Zap className="h-5 w-5" />
                 </div>
@@ -245,8 +183,8 @@ const Home = () => {
                   <p className="text-sm font-bold text-slate-900 dark:text-white">AI Analysis</p>
                   <p className="text-xs text-slate-500 dark:text-slate-400">Instant extraction</p>
                 </div>
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -261,20 +199,13 @@ const Home = () => {
               { icon: <ShieldCheck className="h-5 w-5" />, value: '99.4%', label: 'Accuracy' },
               { icon: <Globe2 className="h-5 w-5" />, value: '50+', label: 'Countries' },
             ].map((stat, i) => (
-              <motion.div 
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="flex items-center gap-3"
-              >
+              <div key={i} className="flex items-center gap-3">
                 <div className="text-brand-500 dark:text-brand-400">{stat.icon}</div>
                 <div>
                   <div className="text-xl font-black text-slate-900 dark:text-white">{stat.value}</div>
                   <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">{stat.label}</div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -283,45 +214,30 @@ const Home = () => {
       {/* Features Section */}
       <section id="features" className="py-24 lg:py-32">
         <div className="app-shell">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-16 max-w-3xl"
-          >
+          <div className="mb-16 max-w-3xl">
             <div className="eyebrow mb-5">How it works</div>
             <h2 className="section-title">From upload to verified proof in seconds.</h2>
             <p className="mt-5 text-lg text-slate-600 dark:text-slate-400">
               Our AI engine reads your certificates, extracts verified data, and builds a professional profile you can share anywhere.
             </p>
-          </motion.div>
+          </div>
 
-          <motion.div 
-            variants={stagger}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            className="grid gap-6 md:grid-cols-2 lg:grid-cols-4"
-          >
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {[
               { icon: <UploadCloud className="h-7 w-7" />, title: 'Upload', desc: 'Add certificate PDFs or images from courses, internships, and achievements.', color: 'from-brand-500 to-brand-600' },
               { icon: <FileSearch className="h-7 w-7" />, title: 'Extract', desc: 'AI reads title, issuer, dates, names, and skills with 99%+ accuracy.', color: 'from-accent-emerald to-emerald-600' },
               { icon: <BrainCircuit className="h-7 w-7" />, title: 'Understand', desc: 'Generate summaries, role suggestions, and career readiness insights.', color: 'from-accent-violet to-violet-600' },
               { icon: <Globe2 className="h-7 w-7" />, title: 'Share', desc: 'Publish a clean portfolio URL for recruiters and mentors to scan.', color: 'from-accent-amber to-amber-600' },
             ].map((feature, i) => (
-              <motion.article
-                key={i}
-                variants={fadeInUp}
-                className="group glass-card p-7 cursor-pointer"
-              >
-                <div className={`mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${feature.color} text-white shadow-lg transition-transform duration-300 group-hover:scale-110`}>
+              <article key={i} className="group glass-card p-7 cursor-pointer">
+                <div className={`mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${feature.color} text-white shadow-lg transition-transform duration-200 group-hover:scale-110`}>
                   {feature.icon}
                 </div>
                 <h3 className="mb-3 text-xl font-black text-slate-900 dark:text-white">{feature.title}</h3>
                 <p className="leading-relaxed text-slate-600 dark:text-slate-400">{feature.desc}</p>
-              </motion.article>
+              </article>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -329,12 +245,7 @@ const Home = () => {
       <section className="py-24 lg:py-32 bg-white dark:bg-slate-950">
         <div className="app-shell">
           <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-            >
+            <div>
               <div className="eyebrow mb-5">Dashboard</div>
               <h2 className="text-4xl font-black tracking-tight text-slate-950 dark:text-white sm:text-5xl">
                 A dashboard that explains achievement, not just stores uploads.
@@ -358,15 +269,9 @@ const Home = () => {
                   <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">See how your portfolio aligns with goals.</p>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="relative"
-            >
+            <div className="relative">
               <div className="rounded-[2rem] border border-slate-200/60 bg-white p-3 shadow-heavy dark:border-white/[0.08] dark:bg-slate-900">
                 <div className="overflow-hidden rounded-[1.5rem] bg-slate-50 p-6 dark:bg-slate-950">
                   <div className="flex items-center justify-between mb-6">
@@ -388,7 +293,7 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -396,15 +301,10 @@ const Home = () => {
       {/* Who It's For */}
       <section className="py-24 lg:py-32">
         <div className="app-shell">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
+          <div className="text-center mb-16">
             <div className="eyebrow mb-5 mx-auto w-fit">Built for everyone</div>
             <h2 className="section-title">One platform, every career stage.</h2>
-          </motion.div>
+          </div>
 
           <div className="grid gap-6 md:grid-cols-3">
             {[
@@ -412,20 +312,13 @@ const Home = () => {
               { icon: <TrendingUp className="h-6 w-6" />, title: 'For job seekers', desc: 'Turn certificates into a recruiter-friendly profile with summaries and role fit.', gradient: 'from-accent-emerald to-emerald-600' },
               { icon: <BookOpenCheck className="h-6 w-6" />, title: 'For upskilling', desc: 'Find what to learn next based on your current certificate portfolio.', gradient: 'from-accent-violet to-violet-600' },
             ].map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="glass-card p-8 group cursor-pointer"
-              >
-                <div className={`mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${item.gradient} text-white shadow-lg transition-transform duration-300 group-hover:scale-110`}>
+              <div key={i} className="glass-card p-8 group cursor-pointer">
+                <div className={`mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${item.gradient} text-white shadow-lg transition-transform duration-200 group-hover:scale-110`}>
                   {item.icon}
                 </div>
                 <h3 className="mb-3 text-xl font-black text-slate-900 dark:text-white">{item.title}</h3>
                 <p className="leading-relaxed text-slate-600 dark:text-slate-400">{item.desc}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -434,19 +327,13 @@ const Home = () => {
       {/* CTA Section */}
       <section className="py-24 lg:py-32">
         <div className="app-shell">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-slate-900 via-slate-900 to-brand-950 p-10 sm:p-16 text-white"
-          >
+          <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-slate-900 via-slate-900 to-brand-950 p-10 sm:p-16 text-white">
             <div className="absolute inset-0 hero-grid opacity-20" />
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-radial from-brand-500/20 via-transparent to-transparent rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-radial from-accent-emerald/10 via-transparent to-transparent rounded-full blur-3xl" />
             
             <div className="relative z-10 grid gap-10 lg:grid-cols-[1fr_auto] lg:items-center">
               <div>
-                <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm">
+                <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10">
                   <LockKeyhole className="h-7 w-7" />
                 </div>
                 <h2 className="max-w-3xl text-balance text-4xl font-black tracking-tight sm:text-5xl">
@@ -461,7 +348,7 @@ const Home = () => {
                 <ArrowRight className="h-5 w-5" />
               </Link>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
     </div>
