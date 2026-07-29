@@ -41,6 +41,14 @@ const Login = () => {
               else if (role === 'mentor') targetPath = '/mentor';
               else if (role === 'org_admin') targetPath = '/organization';
               else if (role === 'employee') targetPath = '/employee';
+            } else {
+              await setDoc(doc(db, 'users', userCredential.user.uid), {
+                uid: userCredential.user.uid,
+                email: userCredential.user.email,
+                displayName: userCredential.user.displayName || userCredential.user.email.split('@')[0],
+                role: 'student',
+                createdAt: new Date().toISOString()
+              });
             }
           }
           navigate(targetPath, { replace: true });
@@ -73,6 +81,14 @@ const Login = () => {
             else if (role === 'mentor') targetPath = '/mentor';
             else if (role === 'org_admin') targetPath = '/organization';
             else if (role === 'employee') targetPath = '/employee';
+          } else {
+            await setDoc(doc(db, 'users', user.uid), {
+              uid: user.uid,
+              email: user.email,
+              displayName: user.displayName || user.email.split('@')[0],
+              role: 'student',
+              createdAt: new Date().toISOString()
+            });
           }
         }
         navigate(targetPath, { replace: true });
