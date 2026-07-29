@@ -33,6 +33,7 @@ const RoleProtectedRoute = ({ children, allowedRoles }) => {
       if (u) {
         setUser(u);
         const userDoc = await getDoc(doc(db, 'users', u.uid));
+        console.log("RoleProtectedRoute - uid:", u.uid, "email:", u.email, "docExists:", userDoc.exists(), "data:", userDoc.data());
         if (userDoc.exists()) {
           setRole(userDoc.data().role || 'student');
         } else {
