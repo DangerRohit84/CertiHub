@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Users, ChevronRight } from 'lucide-react';
 import axios from 'axios';
 import { auth } from '../firebase/firebase';
 import { toast } from 'react-hot-toast';
+
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.06 } } };
+const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] } } };
 
 const MentorDashboard = () => {
   const [students, setStudents] = useState([]);
@@ -26,20 +30,20 @@ const MentorDashboard = () => {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
-      <div className="mb-10">
+    <motion.div className="max-w-7xl mx-auto px-6 py-10" variants={stagger} initial="hidden" animate="visible">
+      <motion.div variants={fadeUp} className="mb-10">
         <h1 className="text-4xl font-black text-slate-950 dark:text-white">Review Board</h1>
         <p className="text-slate-500 mt-2 font-medium">Verify credentials for your assigned student roster.</p>
-      </div>
+      </motion.div>
 
-      <div className="grid md:grid-cols-4 gap-6 mb-12">
+      <motion.div variants={fadeUp} className="grid md:grid-cols-4 gap-6 mb-12">
         <div className="md:col-span-1 card p-6 rounded-[2rem]">
           <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">My Roster</div>
           <div className="text-3xl font-black text-slate-950 dark:text-white">{students.length}</div>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="card p-8 rounded-[2.5rem]">
+      <motion.div variants={fadeUp} className="card p-8 rounded-[2.5rem]">
         <h3 className="text-2xl font-black text-slate-950 dark:text-white mb-8">Assigned Students</h3>
         <div className="space-y-4">
           {students.length > 0 ? students.map(student => (
@@ -68,8 +72,8 @@ const MentorDashboard = () => {
             </div>
           )}
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

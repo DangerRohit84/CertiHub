@@ -3,7 +3,7 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { Navigate } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db, auth } from './firebase/firebase';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Navbar from './components/Navbar';
 import ThemeToggle from './components/ThemeToggle';
 import ChatBot from './components/ChatBot';
@@ -67,7 +67,6 @@ const PageTransition = ({ children }) => (
   <motion.div
     initial={{ opacity: 0, y: 12 }}
     animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: -12 }}
     transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
   >
     {children}
@@ -77,24 +76,22 @@ const PageTransition = ({ children }) => (
 function AnimatedRoutes() {
   const location = useLocation();
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<PageTransition><Home /></PageTransition>} />
-        <Route path="/dashboard" element={<RoleProtectedRoute allowedRoles={['student']}><PageTransition><Dashboard /></PageTransition></RoleProtectedRoute>} />
-        <Route path="/institution" element={<RoleProtectedRoute allowedRoles={['institution']}><PageTransition><InstitutionDashboard /></PageTransition></RoleProtectedRoute>} />
-        <Route path="/hod" element={<RoleProtectedRoute allowedRoles={['hod']}><PageTransition><HODDashboard /></PageTransition></RoleProtectedRoute>} />
-        <Route path="/mentor" element={<RoleProtectedRoute allowedRoles={['mentor']}><PageTransition><MentorDashboard /></PageTransition></RoleProtectedRoute>} />
-        <Route path="/organization" element={<RoleProtectedRoute allowedRoles={['org_admin']}><PageTransition><OrganizationDashboard /></PageTransition></RoleProtectedRoute>} />
-        <Route path="/employee" element={<RoleProtectedRoute allowedRoles={['employee']}><PageTransition><Placeholder title="Employee" /></PageTransition></RoleProtectedRoute>} />
-        <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
-        <Route path="/user/:username" element={<PageTransition><Portfolio /></PageTransition>} />
-        <Route path="/certificate/:id" element={<PageTransition><CertificateDetails /></PageTransition>} />
-        <Route path="/verify/:id" element={<PageTransition><Verify /></PageTransition>} />
-        <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
-        <Route path="/advisor" element={<PageTransition><CareerAdvisor /></PageTransition>} />
-        <Route path="/admin" element={<RoleProtectedRoute allowedRoles={['admin']}><PageTransition><AdminDashboard /></PageTransition></RoleProtectedRoute>} />
-      </Routes>
-    </AnimatePresence>
+    <Routes location={location}>
+      <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+      <Route path="/dashboard" element={<RoleProtectedRoute allowedRoles={['student']}><PageTransition><Dashboard /></PageTransition></RoleProtectedRoute>} />
+      <Route path="/institution" element={<RoleProtectedRoute allowedRoles={['institution']}><PageTransition><InstitutionDashboard /></PageTransition></RoleProtectedRoute>} />
+      <Route path="/hod" element={<RoleProtectedRoute allowedRoles={['hod']}><PageTransition><HODDashboard /></PageTransition></RoleProtectedRoute>} />
+      <Route path="/mentor" element={<RoleProtectedRoute allowedRoles={['mentor']}><PageTransition><MentorDashboard /></PageTransition></RoleProtectedRoute>} />
+      <Route path="/organization" element={<RoleProtectedRoute allowedRoles={['org_admin']}><PageTransition><OrganizationDashboard /></PageTransition></RoleProtectedRoute>} />
+      <Route path="/employee" element={<RoleProtectedRoute allowedRoles={['employee']}><PageTransition><Placeholder title="Employee" /></PageTransition></RoleProtectedRoute>} />
+      <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
+      <Route path="/user/:username" element={<PageTransition><Portfolio /></PageTransition>} />
+      <Route path="/certificate/:id" element={<PageTransition><CertificateDetails /></PageTransition>} />
+      <Route path="/verify/:id" element={<PageTransition><Verify /></PageTransition>} />
+      <Route path="/settings" element={<PageTransition><Settings /></PageTransition>} />
+      <Route path="/advisor" element={<PageTransition><CareerAdvisor /></PageTransition>} />
+      <Route path="/admin" element={<RoleProtectedRoute allowedRoles={['admin']}><PageTransition><AdminDashboard /></PageTransition></RoleProtectedRoute>} />
+    </Routes>
   );
 }
 

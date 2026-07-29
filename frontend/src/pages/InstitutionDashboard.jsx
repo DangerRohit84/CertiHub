@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { GraduationCap, Plus, ShieldCheck, Award } from 'lucide-react';
 import axios from 'axios';
 import { auth, db } from '../firebase/firebase';
@@ -6,6 +7,9 @@ import { doc, getDoc } from 'firebase/firestore';
 import { toast } from 'react-hot-toast';
 import BatchImageIssueModal from '../components/modals/BatchImageIssueModal';
 import ForcedUsernameModal from '../components/modals/ForcedUsernameModal';
+
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } };
+const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } } };
 
 const InstitutionDashboard = () => {
   const [hods, setHods] = useState([]);
@@ -62,8 +66,8 @@ const InstitutionDashboard = () => {
 
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
-      <div className="flex justify-between items-center mb-10">
+    <motion.div className="max-w-7xl mx-auto px-6 py-10" variants={stagger} initial="hidden" animate="visible">
+      <motion.div variants={fadeUp} className="flex justify-between items-center mb-10">
         <div>
           <h1 className="text-4xl font-black text-slate-950 dark:text-white">Institution Hub</h1>
           <p className="text-slate-500 mt-2 font-medium">Manage your academic departments and issue credentials.</p>
@@ -92,7 +96,7 @@ const InstitutionDashboard = () => {
             <Plus className="w-5 h-5" /> Add New HOD
           </button>
         </div>
-      </div>
+      </motion.div>
 
       <div className="grid md:grid-cols-3 gap-6">
         <div className="card p-8 rounded-[2.5rem]">
@@ -206,7 +210,7 @@ const InstitutionDashboard = () => {
         user={user} 
         onUsernameSet={(newUsername) => setDbUser({ ...dbUser, username: newUsername })} 
       />
-    </div>
+    </motion.div>
   );
 };
 

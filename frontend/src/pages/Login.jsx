@@ -40,7 +40,7 @@ const Login = () => {
             else if (role === 'employee') targetPath = '/employee';
             else if (userCredential.user.email === 'admin@certihub.com') targetPath = '/admin';
           }
-          navigate(targetPath);
+          navigate(targetPath, { replace: true });
         }
       } catch (err) {
         console.error("Redirect error:", err);
@@ -48,7 +48,7 @@ const Login = () => {
       }
     };
     checkRedirect();
-  }, [isLogin, navigate]);
+  }, []);
 
   const handleEmailAuth = async (e) => {
     e.preventDefault();
@@ -69,7 +69,7 @@ const Login = () => {
           else if (role === 'employee') targetPath = '/employee';
           else if (user.email === 'admin@certihub.com') targetPath = '/admin';
         }
-        navigate(targetPath);
+        navigate(targetPath, { replace: true });
         return;
       } else {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -87,7 +87,7 @@ const Login = () => {
         else if (selectedRole === 'mentor') targetPath = '/mentor';
         else if (selectedRole === 'org_admin') targetPath = '/organization';
         else if (selectedRole === 'employee') targetPath = '/employee';
-        setTimeout(() => navigate(targetPath), 500);
+        setTimeout(() => navigate(targetPath, { replace: true }), 500);
       }
     } catch (err) {
       setError(err.message);
