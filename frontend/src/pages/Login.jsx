@@ -74,7 +74,6 @@ const Login = () => {
           targetPath = '/admin';
         } else {
           const userDoc = await getDoc(doc(db, 'users', user.uid));
-          console.log("Login debug - uid:", user.uid, "email:", user.email, "docExists:", userDoc.exists(), "data:", userDoc.data());
           if (userDoc.exists()) {
             const role = userDoc.data().role || 'student';
             if (role === 'institution') targetPath = '/institution';
