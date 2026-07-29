@@ -29,16 +29,19 @@ const Login = () => {
       try {
         const userCredential = await getRedirectResult(auth);
         if (userCredential) {
-          const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
           let targetPath = '/dashboard';
-          if (userDoc.exists()) {
-            const role = userDoc.data().role || 'student';
-            if (role === 'institution') targetPath = '/institution';
-            else if (role === 'hod') targetPath = '/hod';
-            else if (role === 'mentor') targetPath = '/mentor';
-            else if (role === 'org_admin') targetPath = '/organization';
-            else if (role === 'employee') targetPath = '/employee';
-            else if (userCredential.user.email === 'admin@certihub.com') targetPath = '/admin';
+          if (userCredential.user.email === 'admin@certihub.com') {
+            targetPath = '/admin';
+          } else {
+            const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
+            if (userDoc.exists()) {
+              const role = userDoc.data().role || 'student';
+              if (role === 'institution') targetPath = '/institution';
+              else if (role === 'hod') targetPath = '/hod';
+              else if (role === 'mentor') targetPath = '/mentor';
+              else if (role === 'org_admin') targetPath = '/organization';
+              else if (role === 'employee') targetPath = '/employee';
+            }
           }
           navigate(targetPath, { replace: true });
         }
@@ -58,16 +61,19 @@ const Login = () => {
       if (isLogin) {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
         let targetPath = '/dashboard';
-        if (userDoc.exists()) {
-          const role = userDoc.data().role || 'student';
-          if (role === 'institution') targetPath = '/institution';
-          else if (role === 'hod') targetPath = '/hod';
-          else if (role === 'mentor') targetPath = '/mentor';
-          else if (role === 'org_admin') targetPath = '/organization';
-          else if (role === 'employee') targetPath = '/employee';
-          else if (user.email === 'admin@certihub.com') targetPath = '/admin';
+        if (user.email === 'admin@certihub.com') {
+          targetPath = '/admin';
+        } else {
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          if (userDoc.exists()) {
+            const role = userDoc.data().role || 'student';
+            if (role === 'institution') targetPath = '/institution';
+            else if (role === 'hod') targetPath = '/hod';
+            else if (role === 'mentor') targetPath = '/mentor';
+            else if (role === 'org_admin') targetPath = '/organization';
+            else if (role === 'employee') targetPath = '/employee';
+          }
         }
         navigate(targetPath, { replace: true });
         return;
