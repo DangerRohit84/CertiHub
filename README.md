@@ -7,7 +7,8 @@
 [![React](https://img.shields.io/badge/React-19.2.5-61DAFB?logo=react)](https://reactjs.org/)
 [![Express](https://img.shields.io/badge/Express-5.2.1-000000?logo=express)](https://expressjs.com/)
 [![Firebase](https://img.shields.io/badge/Firebase-FFCA28?logo=firebase)](https://firebase.google.com/)
-[![Groq AI](https://img.shields.io/badge/Groq_AI-Llama_3.3-8B5CF6)](https://groq.com/)
+[![Groq AI](https://img.shields.io/badge/Groq_AI-GPT_OSS_120B-8B5CF6)](https://groq.com/)
+[![Groq Vision](https://img.shields.io/badge/Groq_Vision-Qwen3.8_27B-14B8A6)](https://groq.com/)
 [![Cloudinary](https://img.shields.io/badge/Cloudinary-F68D1E?logo=cloudinary)](https://cloudinary.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#)
 
@@ -250,17 +251,17 @@ All authenticated endpoints require a `Bearer` token in the `Authorization` head
 
 | Method | Endpoint | Auth | Description |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/api/analyze` | Student+ | Upload & analyze a certificate (multipart) |
-| `POST` | `/api/re-analyze` | Student+ | Re-analyze a certificate with AI |
-| `POST` | `/api/delete-file` | Student+ | Delete certificate from Cloudinary |
+| `POST` | `/api/analyze` | Authenticated (any role) | Upload & analyze a certificate (multipart) |
+| `POST` | `/api/re-analyze` | Authenticated (any role) | Re-analyze a certificate with AI |
+| `POST` | `/api/delete-file` | Authenticated (any role) | Delete certificate from Cloudinary |
 
 ### Career & Social
 
 | Method | Endpoint | Auth | Description |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/api/career-advice` | Student+ | Get AI career roadmap from certificates |
-| `POST` | `/api/generate-post` | Student+ | Generate LinkedIn post for a certificate |
-| `POST` | `/api/chat` | Student+ | Chat with AI assistant |
+| `POST` | `/api/career-advice` | Authenticated (any role) | Get AI career roadmap from certificates |
+| `POST` | `/api/generate-post` | Authenticated (any role) | Generate LinkedIn post for a certificate |
+| `POST` | `/api/chat` | Authenticated (any role) | Chat with AI assistant |
 | `GET` | `/api/share/:id` | Public | View shared certificate page |
 
 ### Institution Management
@@ -268,7 +269,7 @@ All authenticated endpoints require a `Bearer` token in the `Authorization` head
 | Method | Endpoint | Auth | Description |
 | :--- | :--- | :--- | :--- |
 | `POST` | `/api/institution/create-hod` | Institution | Create HOD account |
-| `GET` | `/api/institution/departments` | Institution+ | Get departments list |
+| `GET` | `/api/institution/departments` | Institution, HOD, Mentor | Get departments list |
 | `POST` | `/api/institution/batch-issue` | Institution | Batch issue certificates (multipart) |
 
 ### HOD Routes
@@ -295,7 +296,9 @@ All authenticated endpoints require a `Bearer` token in the `Authorization` head
 
 | Method | Endpoint | Auth | Description |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/api/admin/stats` | Admin+ | Platform-wide analytics |
+| `GET` | `/api/admin/stats?range=7D\|1M\|3M\|1Y\|ALL` | Admin, Institution | Platform-wide analytics (role-based; legacy `admin@certihub.com` / demo allowlist retained) |
+
+`GET /api/admin/stats` supports an optional `range` query param (`7D` daily granularity, `1M`/`3M`/`1Y`/`ALL` monthly; defaults to all-time when omitted). Certificate timestamps fall back in order: Firestore `createTime` -> `createdAt` field -> current time, so older documents without timestamps still appear in growth charts. The dashboard (`AdminDashboard.jsx`) passes the selected range, auto-refreshes every 30 seconds, and renders growth, issuer share, credential feed, and system health from this endpoint.
 
 ---
 
@@ -315,7 +318,8 @@ The `vercel.json` is pre-configured with SPA rewrites for client-side routing.
 
 ```bash
 cd server
-npm run build   # if using a build step
+npm install
+npm start
 ```
 
 Ensure the following environment variables are set in your hosting provider:
