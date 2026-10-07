@@ -1,14 +1,21 @@
 const axios = require('axios');
 
+// Groq Production models (verified Oct 2026 via https://console.groq.com/docs/models + /docs/deprecations):
+// - llama-3.3-70b-versatile retired 2026-08-16 -> replaced by openai/gpt-oss-120b
+// - qwen/qwen3.6-27b retired 2026-09-14 -> replaced by qwen/qwen3.8-27b (sole supported vision model)
 // Process API key once at the module level
 const GROQ_API_KEY = (process.env.GROQ_API_KEY || '').trim();
+
+// Centralized model IDs so future Groq deprecations require a one-line change.
+const TEXT_MODEL = 'openai/gpt-oss-120b';
+const VISION_MODEL = 'qwen/qwen3.8-27b';
 
 const analyzeTextWithAI = async (extractedText) => {
   try {
     const response = await axios.post(
       'https://api.groq.com/openai/v1/chat/completions',
       {
-        model: 'llama-3.3-70b-versatile',
+        model: TEXT_MODEL,
         messages: [
           {
             role: 'system',
@@ -81,7 +88,7 @@ Schema:
 };
 
 const getCareerAdviceFromAI = async (certificatesSummary) => {
-  const model = "llama-3.3-70b-versatile";
+  const model = TEXT_MODEL;
   const systemPrompt = `You are a Career Advisor. Analyze certificates and return JSON:
 {
   "suggestedRole": "Best-fit job title",
@@ -125,7 +132,7 @@ Rules: Be realistic. Suggest 3 roadmap steps. Professional tone.`;
 };
 
 const generateLinkedInPostFromAI = async (cert) => {
-  const model = "llama-3.3-70b-versatile";
+  const model = TEXT_MODEL;
   const systemPrompt = `Create a professional LinkedIn post (3-5 sentences) celebrating a certification. Include 3-5 relevant hashtags and 2-3 emojis. Return ONLY the post text.`;
 
   try {
@@ -160,7 +167,7 @@ const analyzeImageWithAI = async (base64Image) => {
     const response = await axios.post(
       'https://api.groq.com/openai/v1/chat/completions',
       {
-        model: 'qwen/qwen3.6-27b',
+        model: VISION_MODEL,
         messages: [
           {
             role: 'user',

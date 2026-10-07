@@ -46,7 +46,7 @@ Traditional professional certificates are **static, difficult to verify instantl
 
 CertiHub bridges the gap between visual credentials and career intelligence through an **AI-First ecosystem**.
 
-- **Automated Extraction** — Using Llama-3.2 Vision to "read" certificates like a human with 95%+ accuracy.
+- **Automated Extraction** — Using Qwen 3.8 27B Vision (Groq) to "read" certificates like a human with 95%+ accuracy.
 - **Smart Issuance** — Automates institutional workflows, mapping visual certificates to employee records via AI name-matching.
 - **Dynamic Insights** — Transforms static files into a real-time skills matrix and institutional analytics dashboard.
 
@@ -98,7 +98,7 @@ User uploads certificate (Image/PDF)
 ┌─────────────────────────┐
 │  Dual-Engine AI Analysis │
 │  ┌───────────┬─────────┐ │
-│  │ Vision AI │  OCR    │ │  ← Llama-3.2 Vision + Tesseract.js
+│  │ Vision AI │  OCR    │ │  ← Qwen 3.8 27B Vision + Tesseract.js
 │  └───────────┴─────────┘ │
 └────────┬────────────────┘
          │
@@ -128,7 +128,7 @@ Portfolio   Analytics Dashboard
 | **Frontend** | React 19, Tailwind CSS 3, Framer Motion, React Router 7, Lucide Icons |
 | **Backend** | Node.js, Express 5, Multer |
 | **Database & Auth** | Firebase (Firestore, Authentication, Admin SDK) |
-| **AI Engine** | Groq Cloud — Llama 3.3 70B (text), Llama 3.2 90B Vision (images) |
+| **AI Engine** | Groq Cloud — GPT-OSS 120B (text/JSON), Qwen 3.8 27B (vision/images) |
 | **OCR** | Tesseract.js 7, pdf-parse |
 | **Asset Storage** | Cloudinary (signed URLs, on-the-fly transformations) |
 | **DevOps** | Vercel (frontend), Render/GCP (backend), Jest + Supertest (testing) |

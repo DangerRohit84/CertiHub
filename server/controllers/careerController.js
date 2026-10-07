@@ -2,6 +2,10 @@ const axios = require('axios');
 const { generateLinkedInPostFromAI } = require('../utils/aiService');
 const GROQ_API_KEY = (process.env.GROQ_API_KEY || '').trim();
 
+// Groq Production model (verified Oct 2026): llama-3.3-70b-versatile retired
+// 2026-08-16 -> recommended replacement openai/gpt-oss-120b.
+const TEXT_MODEL = 'openai/gpt-oss-120b';
+
 exports.getCareerAdvice = async (req, res) => {
   const { certificates } = req.body;
   
@@ -37,7 +41,7 @@ exports.getCareerAdvice = async (req, res) => {
 
   try {
     const response = await axios.post('https://api.groq.com/openai/v1/chat/completions', {
-      model: "llama-3.3-70b-versatile",
+      model: TEXT_MODEL,
       messages: [{ role: "user", content: prompt }],
       response_format: { type: "json_object" }
     }, {
@@ -155,7 +159,7 @@ exports.chatWithAI = async (req, res) => {
 
   try {
     const response = await axios.post('https://api.groq.com/openai/v1/chat/completions', {
-      model: "llama-3.3-70b-versatile",
+      model: TEXT_MODEL,
       messages: [
         { role: "system", content: systemPrompt },
         ...messages
