@@ -243,7 +243,7 @@ const AdminDashboard = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-white/5">
-                    {stats?.recentActivity.filter(a => a.title.toLowerCase().includes(searchQuery.toLowerCase())).map((act) => (
+                    {(stats?.recentActivity || []).filter(a => (a.title || '').toLowerCase().includes(searchQuery.toLowerCase())).map((act) => (
                       <tr key={act.id} className="group transition-colors hover:bg-slate-50 dark:hover:bg-white/5">
                         <td className="py-4 pr-4">
                           <div className="text-sm font-bold text-slate-900 dark:text-white">{act.title}</div>

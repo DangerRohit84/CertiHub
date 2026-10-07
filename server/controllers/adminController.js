@@ -5,8 +5,11 @@ exports.getAdminStats = async (req, res) => {
   const startTime = Date.now();
   const { range } = req.query; // 7D, 1M, 3M, 1Y, ALL
   
-  // Security Check: Only admin can access
-  if (req.user.email !== 'admin@certihub.com' && req.user.email !== 'demo@gmail.com') {
+  // Security Check: role-based (middleware already enforces checkRole(['admin','institution'])).
+  // Legacy email allowlist retained for backwards compatibility (demo/bootstrap accounts).
+  const isAdminEmail = req.user.email === 'admin@certihub.com' || req.user.email === 'demo@gmail.com';
+  const hasAnalyticsRole = req.user.role === 'admin' || req.user.role === 'institution';
+  if (!isAdminEmail && !hasAnalyticsRole) {
     return res.status(403).json({ error: "Access denied: Admin eyes only." });
   }
 
@@ -17,9 +20,24 @@ exports.getAdminStats = async (req, res) => {
   try {
     const db = admin.firestore();
     
-    // 1. Fetch Total Certificates
+    // 1. Fetch Total Certificates (createTime fallback: snapshot metadata -> data.createdAt -> now)
     const certsSnapshot = await db.collection('certificates').limit(1000).get();
-    const certs = certsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), createTime: doc.createTime.toDate() }));
+    const certs = certsSnapshot.docs.map(doc => {
+      const data = doc.data();
+      let ts = new Date();
+      try {
+        if (doc.createTime && typeof doc.createTime.toDate === 'function') {
+          ts = doc.createTime.toDate();
+        } else if (data.createdAt && typeof data.createdAt.toDate === 'function') {
+          ts = data.createdAt.toDate();
+        } else if (data.createdAt) {
+          ts = new Date(data.createdAt);
+        }
+      } catch {
+        ts = new Date();
+      }
+      return { id: doc.id, ...data, createTime: ts };
+    });
     
     // 2. Fetch Total Users
     const usersSnapshot = await db.collection('users').limit(1000).get();
